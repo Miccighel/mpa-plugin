@@ -4,7 +4,7 @@
  *
  * @package    report
  * @subpackage mpa
- * @copyright  2015 Michael Soprano* @license
+ * @copyright  2015 Michael Soprano
  */
 
 defined('MOODLE_INTERNAL') || die;

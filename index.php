@@ -1,7 +1,3 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Michael
- * Date: 07/05/15
- * Time: 16:24
- */ 
+
+echo "Se vedi questa pagina significa che sono riuscito ad installare un plugin Moodle.";
