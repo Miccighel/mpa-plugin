@@ -1,12 +1,16 @@
 <?php
 /**
- * Version info
+ * Informazioni sulla versione del plugin.
  *
  * @package    report
  * @subpackage mpa
- * @copyright  2015 Michael Soprano
+ * @copyright  2015, Michael Soprano, miccighel@gmail.com
  */
+
 defined('MOODLE_INTERNAL') || die;
-$plugin->version   = 2015070600;    // The current plugin version (Date: YYYYMMDDXX)
-$plugin->requires  = 2014111005.09;    // Requires this Moodle version
-$plugin->component = 'report_mpa';  // Full name of the plugin (used for diagnostics)
+
+$plugin->version   = 2015070600;    // Versione corrente del plugin.
+$plugin->requires  = 2014111005.09;    // Versione moodle richiesta.
+$plugin->component = 'report_mpa';  // Nome del plugin.
+$plugin->maturity = MATURITY_ALPHA; // Maturità del plugin.
+$plugin->release = 'v1.0';
