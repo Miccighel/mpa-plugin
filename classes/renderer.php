@@ -1,6 +1,6 @@
 <?php
 /**
- * Business logic del plugin.
+ * Classe contenente le viste del plugin
  *
  * @package    report
  * @subpackage mpa

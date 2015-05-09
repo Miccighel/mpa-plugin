@@ -1,7 +1,8 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Michael
- * Date: 07/05/15
- * Time: 17:46
- */ 
+ * Interazione con il core di Moodle.
+ *
+ * @package    report
+ * @subpackage mpa
+ * @copyright  2015, Michael Soprano, miccighel@gmail.com
+ */
