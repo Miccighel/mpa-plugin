@@ -9,9 +9,35 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+// In questo file vengono definite le varie tipologie di azioni eseguibili nel report con i relativi permessi.
+
 $capabilities = array(
-    'report/mpa:viewdata' => array (
-        'captype' => 'read',
+    'report/mpa:viewuserdata' => array (
+        'captype'      => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes'   => array(
+            'teacher'        => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager'          => CAP_ALLOW
+        )
+    ),
+    'report/mpa:viewassessmentdata' => array (
+        'captype'      => 'read',
         'contextlevel' => CONTEXT_USER,
+        'archetypes'   => array(
+            'student'        => CAP_ALLOW,
+            'teacher'        => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager'          => CAP_ALLOW
+        ),
+    ),
+    'report/mpa:editsettings' => array (
+        'captype'      => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes'   => array(
+            'teacher'        => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager'          => CAP_ALLOW
+        )
     ),
 );

@@ -8,5 +8,4 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-$ADMIN->add('reports', new admin_externalpage('mpa', get_string('pluginname', 'report_mpa'), "$CFG->wwwroot/report/mpa/index.php"));
-$settings = null;
+$item = $ADMIN->add('reports', new admin_externalpage('mpa', get_string('pluginname', 'report_mpa'), "$CFG->wwwroot/report/mpa/index.php"));

@@ -12,4 +12,8 @@
 
 $string['pluginname'] = 'Mizzaro Peer Assessment';
 $string['sitename'] = 'Laboratory of programming';
-$string['mpa:viewdata'] = 'View assessment data';
+$string['mpa:viewuserdata'] = 'View assessment data of all the users';
+$string['mpa:viewassessmentdata'] = 'View data regarding your assesments';
+$string['capabilityerror'] = "You're not allowed to view this resource.";
+$string['basemenu'] = "Assessment management";
+$string['mpa:editsettings'] = "Edit settings";

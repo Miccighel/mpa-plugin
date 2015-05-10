@@ -12,4 +12,8 @@
 
 $string['pluginname'] = 'Valutazione Tra Pari Mizzaro';
 $string['sitename'] = 'Laboratorio di programmazione';
-$string['mpa:viewdata'] = "Visualizza i dati delle valutazioni";
+$string['mpa:viewuserdata'] = "Visualizza i dati delle valutazioni di tutti gli utenti";
+$string['mpa:viewassessmentdata'] = 'Visualizza i dati relativi alle tue valutazioni';
+$string['capabilityerror'] = "Non ti è permesso visualizzare questa risorsa.";
+$string['basemenu'] = "Gestione delle valutazioni";
+$string['mpa:editsettings'] = "Modifica impostazioni";
