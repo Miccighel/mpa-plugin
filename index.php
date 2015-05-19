@@ -24,7 +24,7 @@ if(has_capability('report/mpa:editsettings',$usercontext,$userid)){
 
     // Ottengo i dati da passare al renderer
 
-    echo $renderer->render_report_settings();
+    echo $renderer->render_report_overview();
 
 } else {
     echo $renderer->render_capability_error();

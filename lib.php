@@ -18,12 +18,7 @@ function report_mpa_extend_navigation_user($navigation, $user, $course) {
 
     $container = $navigation->add(get_string('basemenu','report_mpa'),navigation_node::TYPE_ROOTNODE);
 
-    if (has_capability('report/mpa:viewuserdata', $context)) {
-        $url = new moodle_url('/report/mpa/views/userdata.php');
-        $item = $container->add(get_string('mpa:viewuserdata', 'report_mpa'), $url, navigation_node::TYPE_CONTAINER);
-    }
-
-    $url = new moodle_url('/report/mpa/views/data.php');
-    $item = $container->add(get_string('mpa:viewassessmentdata','report_mpa'), $url,navigation_node::TYPE_CONTAINER);
+    $url = new moodle_url('/report/mpa/views/studentsummary.php');
+    $item = $container->add(get_string('mpa:studentsummary', 'report_mpa'), $url, navigation_node::TYPE_CONTAINER);
 
 }
