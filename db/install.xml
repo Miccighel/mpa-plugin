@@ -1,0 +1,22 @@
+<!--
+
+    Schema delle tabelle create nel database dal plugin.
+
+-->
+
+<XMLDB PATH="report/mpa/db" VERSION="2015070600" COMMENT="XMLDB file for Moodle report/mpa">
+    <TABLES>
+        <TABLE NAME="mpa_student_summary" COMMENT="Data to create the summary for the students of the courses">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" DEFAULT="0" LENGTH="10" NOTNULL="true"/>
+                <FIELD NAME="ex_to_evaluate_solved" TYPE="int" LENGTH="10" NOTNULL="true"/>
+                <FIELD NAME="ex_assessed" TYPE="int" LENGTH="10" NOTNULL="true"/>
+                <FIELD NAME="grades" TYPE="int" LENGTH="10" NOTNULL="true"/>
+                <FIELD NAME="assignments_solved" TYPE="int" LENGTH="10" NOTNULL="true"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+            </KEYS>
+        </TABLE>
+    </TABLES>
+</XMLDB>

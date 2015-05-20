@@ -20,7 +20,7 @@ print_page_attributes('pluginname','pluginname',$usercontext,'report');
 
 $renderer = $PAGE->get_renderer('report_mpa');
 
-if(has_capability('report/mpa:editsettings',$usercontext,$userid)){
+if(has_capability('report/mpa:reportoverview',$usercontext,$userid)){
 
     // Ottengo i dati da passare al renderer
 

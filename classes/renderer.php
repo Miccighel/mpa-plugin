@@ -13,13 +13,15 @@ require_once($CFG->dirroot.'/report/mpa/locallib.php');
 
 class report_mpa_renderer extends plugin_renderer_base {
 
-    public function render_student_summary(){
+    public function render_student_summary($students_data){
 
         global $OUTPUT;
 
         echo $OUTPUT->header();
 
-        echo "Visualizzazione dati di tutti gli utenti";
+        echo '<pre>';
+        print_r($students_data);
+        echo '</pre>';
 
         echo $OUTPUT->footer();
     }
