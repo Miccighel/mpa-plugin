@@ -105,6 +105,7 @@ if (!empty($students)) {
 }
 
 $students_data = array();
+$students_info = array();
 
 if (!empty($students)) {
     // Per ogni studente presente nel db
@@ -114,7 +115,7 @@ if (!empty($students)) {
             $students_data[$student_id] = $result[$student_id];
         }
         /* Se a questo punto un campo dell'array associativo ha meno di quattro elementi ma più di uno è perchè l'ultima query
-        non ha individuato assignment risolti per lo studente in oggetto, ma le query precedenti rilevano che ha svolto assessment ed assegnato valutazioni.
+        non ha individuato assignment risolti per lo studente in oggetto, ma quelle precedenti rilevano che ha svolto assessment ed assegnato valutazioni.
         Di conseguenza, va messo comunque tra i dati passati al renderer perchè dovrà essere mostrato nel riepilogo.
         Viene dunque inserito uno zero tra i suoi dati ad indicare che non ha svolto, appunto, alcun assignment. */
         if (sizeof($result[$student_id]) < 4 && sizeof($result[$student_id]) > 0) {
@@ -131,14 +132,22 @@ if (!empty($students)) {
 // Per ogni studente di cui sono stati calcolati i dati riassuntivi
 foreach($students_data as $student_id => $student_data){
 
-    $test = $DB->get_records_sql('SELECT id FROM {mpa_student_summary} WHERE id=?',array($student_id));
+    $student = $DB->get_records_sql('SELECT * FROM {mpa_student_summary} WHERE id=?',array($student_id));
+    $temp = $DB->get_records_sql('SELECT * FROM {user} WHERE id=?',array($student_id));
+    // Ottengo tutte le informazioni relative allo studente estraendo l'oggetto dall'array restituito dall'interrogazione al db
+    $student_info = array_pop($temp);
 
     // Se lo studente non è presente nel db, viene inserito un nuovo record nella tabella con i dati relativi allo studente stesso, altrimenti il record stesso viene aggiornato
-    if(empty($test)){
+    if(empty($student)){
        $DB->execute('INSERT INTO {mpa_student_summary} (id,ex_to_evaluate_solved,ex_assessed,grades,assignments_solved) VALUES (?,?,?,?,?)', $parms=array($student_id,$student_data[0],$student_data[1],$student_data[2],$student_data[3]));
     } else {
         $DB->execute('UPDATE {mpa_student_summary} SET id=?, ex_to_evaluate_solved=?, ex_assessed=?, grades=?, assignments_solved=? WHERE id=?', $parms=array($student_id,$student_data[0],$student_data[1],$student_data[2],$student_data[3],$student_id));
     }
+
+    // Ai dati già calcolati relativi allo studente vengono aggiunte le informazioni del suo profilo
+    array_push($students_data[$student_id],$student_info);
+
 }
 
+// I dati ottenuti vengono passati al renderer
 echo $renderer->render_student_summary($students_data);

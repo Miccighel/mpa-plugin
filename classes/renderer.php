@@ -19,9 +19,15 @@ class report_mpa_renderer extends plugin_renderer_base {
 
         echo $OUTPUT->header();
 
-        echo '<pre>';
-        print_r($students_data);
-        echo '</pre>';
+        $table = new html_table();
+        $table->head=array(get_string('username','report_mpa'),get_string('ex_to_evaluate_solved','report_mpa'),get_string('ex_assessed','report_mpa'),get_string('grades','report_mpa'),get_string('assignments_solved','report_mpa'));
+
+        foreach($students_data as $student){
+            $info = $student[4];
+            $table->data[]=array($student[4]->username,$student[0],$student[1],$student[2],$student[3]);
+        }
+
+        echo html_writer::table($table);
 
         echo $OUTPUT->footer();
     }

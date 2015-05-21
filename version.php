@@ -9,7 +9,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2015070600;    // Versione corrente del plugin.
+$plugin->version   = 2015070601;    // Versione corrente del plugin.
 $plugin->requires  = 2014111005.09;    // Versione moodle richiesta.
 $plugin->component = 'report_mpa';  // Nome del plugin.
 $plugin->maturity = MATURITY_ALPHA; // Maturità del plugin.
