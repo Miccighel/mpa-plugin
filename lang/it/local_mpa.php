@@ -3,7 +3,7 @@
 /**
  * Stringhe per il componente MPA lingua IT.
  *
- * @package    report
+ * @package    local
  * @subpackage mpa
  * @copyright  2015, Michael Soprano, miccighel@gmail.com
  */

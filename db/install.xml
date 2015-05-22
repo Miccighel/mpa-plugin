@@ -4,7 +4,7 @@
 
 -->
 
-<XMLDB PATH="report/mpa/db" VERSION="2015070600" COMMENT="XMLDB file for Moodle report/mpa">
+<XMLDB PATH="local/mpa/db" VERSION="2015070600" COMMENT="XMLDB file for Moodle report/mpa">
     <TABLES>
         <TABLE NAME="mpa_student_summary" COMMENT="Data to create the summary for the students of the courses">
             <FIELDS>

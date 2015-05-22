@@ -2,16 +2,16 @@
 /**
  * Classe contenente le viste del plugin
  *
- * @package    report
+ * @package    local
  * @subpackage mpa
  * @copyright  2015, Michael Soprano, miccighel@gmail.com
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/report/mpa/locallib.php');
+require_once($CFG->dirroot.'/local/mpa/locallib.php');
 
-class report_mpa_renderer extends plugin_renderer_base {
+class local_mpa_renderer extends plugin_renderer_base {
 
     public function render_student_summary($students_data){
 
@@ -20,7 +20,7 @@ class report_mpa_renderer extends plugin_renderer_base {
         echo $OUTPUT->header();
 
         $table = new html_table();
-        $table->head=array(get_string('username','report_mpa'),get_string('ex_to_evaluate_solved','report_mpa'),get_string('ex_assessed','report_mpa'),get_string('grades','report_mpa'),get_string('assignments_solved','report_mpa'));
+        $table->head=array(get_string('username','local_mpa'),get_string('ex_to_evaluate_solved','local_mpa'),get_string('ex_assessed','local_mpa'),get_string('grades','local_mpa'),get_string('assignments_solved','local_mpa'));
 
         foreach($students_data as $student){
             $info = $student[4];
@@ -37,12 +37,12 @@ class report_mpa_renderer extends plugin_renderer_base {
 
         echo $OUTPUT->header();
 
-        echo get_string('capabilityerror','report_mpa');
+        echo get_string('capabilityerror','local_mpa');
 
         echo $OUTPUT->footer();
     }
 
-    public function render_report_overview(){
+    public function render_local_overview(){
         global $OUTPUT;
 
         echo $OUTPUT->header();

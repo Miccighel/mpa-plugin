@@ -3,19 +3,19 @@
 /**
  * Pagina di visualizzazione del riepilogo degli studenti.
  *
- * @package    report
+ * @package    local
  * @subpackage mpa
  * @copyright  2015, Michael Soprano, miccighel@gmail.com
  */
 
 require(dirname(__FILE__) . '/../../../config.php');
-require_once($CFG->dirroot . '/report/mpa/locallib.php');
+require_once($CFG->dirroot . '/local/mpa/locallib.php');
 
 $userid = $USER->id;
 $usercontext = context_user::instance($userid);
-print_page_attributes('pluginname', 'pluginname', $usercontext, 'report');
+print_page_attributes('pluginname', 'pluginname', $usercontext, 'local');
 
-$renderer = $PAGE->get_renderer('report_mpa');
+$renderer = $PAGE->get_renderer('local_mpa');
 
 $result = array();
 $data = array();
