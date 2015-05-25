@@ -32,6 +32,16 @@ class local_mpa_renderer extends plugin_renderer_base {
         echo $OUTPUT->footer();
     }
 
+    public function render_student_feedback(){
+        global $OUTPUT;
+
+        echo $OUTPUT->header();
+
+        echo 'Feedback studenti';
+
+        echo $OUTPUT->footer();
+    }
+
     public function render_capability_error(){
         global $OUTPUT;
 

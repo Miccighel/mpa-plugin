@@ -1,0 +1,21 @@
+<?php
+
+/**
+ * Pagina di visualizzazione del feedback ricevuto sugli esercizi svolti nei workshop ricevuti da altri studenti da quello correntemente collegato.
+ *
+ * @package    local
+ * @subpackage mpa
+ * @copyright  2015, Michael Soprano, miccighel@gmail.com
+ */
+
+require(dirname(__FILE__) . '/../../../config.php');
+require_once($CFG->dirroot . '/local/mpa/locallib.php');
+
+$userid = $USER->id;
+$usercontext = context_user::instance($userid);
+print_page_attributes('pluginname', 'pluginname', $usercontext, 'local');
+
+$renderer = $PAGE->get_renderer('local_mpa');
+
+// I dati ottenuti vengono passati al renderer
+echo $renderer->render_student_feedback();

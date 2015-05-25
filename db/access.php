@@ -22,10 +22,20 @@ $capabilities = array(
             'manager'          => CAP_ALLOW
         )
     ),
-    'local/mpa:reportoverview' => array (
+    'local/mpa:localoverview' => array (
         'captype'      => 'write',
         'contextlevel' => CONTEXT_SYSTEM,
         'archetypes'   => array(
+            'teacher'        => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager'          => CAP_ALLOW
+        )
+    ),
+    'local/mpa:studentfeedback' => array (
+        'captype'      => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes'   => array(
+            'student'        => CAP_ALLOW,
             'teacher'        => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
             'manager'          => CAP_ALLOW

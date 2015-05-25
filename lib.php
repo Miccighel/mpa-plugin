@@ -7,23 +7,16 @@
  * @copyright  2015, Michael Soprano, miccighel@gmail.com
  */
 
-/*function local_mpa_extend_navigation_user($navigation, $user, $course) {
-    global $USER;
+function local_mpa_extends_navigation(global_navigation $navigation){
 
-    if (isguestuser() or !isloggedin()) {
-        return;
-    }
+    global $CFG;
 
-    $context = context_user::instance($USER->id);
+    $baseMenu = $navigation->add(get_string('pluginname', 'local_mpa'), new moodle_url($CFG->wwwroot.'/local/mpa/index.php'), null, null, null);
 
-    $container = $navigation->add(get_string('basemenu','local_mpa'),navigation_node::TYPE_ROOTNODE);
+    $baseMenu->add(get_string('mpa:studentsummary', 'local_mpa'), new moodle_url($CFG->wwwroot.'/local/mpa/views/studentsummary.php'), null, null, null);
+    $baseMenu->add(get_string('mpa:studentfeedback', 'local_mpa'), new moodle_url($CFG->wwwroot.'/local/mpa/views/studentfeedback.php'), null, null, null);
 
-    $url = new moodle_url('/local/mpa/views/studentsummary.php');
-    $item = $container->add(get_string('mpa:studentsummary', 'local_mpa'), $url, navigation_node::TYPE_CONTAINER);
-
-}*/
-
-function local_mpa_extends_navigation(global_navigation $navigation) {
-    $nodeFoo = $navigation->add('Foo');
-    $nodeBar = $nodeFoo->add('Bar');
+    $baseMenu->forceopen = true;
 }
+
+
