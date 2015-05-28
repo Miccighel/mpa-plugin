@@ -22,6 +22,10 @@ class Student {
         array_push($this->submissions,$submission);
     }
 
+    function getSubmissions(){
+        return $this->submissions;
+    }
+
 }
 
 class Submission {
@@ -41,6 +45,10 @@ class Submission {
         array_push($this->assessments,$assessment);
     }
 
+    function getAssessments(){
+        return $this->assessments;
+    }
+
 }
 
 class Assessment {
@@ -58,6 +66,10 @@ class Assessment {
 
     function addGrade($grade){
         array_push($this->grades,$grade);
+    }
+
+    function getGrades(){
+        return $this->grades;
     }
 
 }

@@ -22,3 +22,33 @@ $string['grades'] = "Number of grades";
 $string['assignments_solved'] = "Exercises solved";
 $string['username'] = "Student";
 $string['mpa:studentfeedback'] = "View feedback";
+$string['submission'] = "Submission";
+$string['subid'] = "ID";
+$string['introduction'] = "Introduction";
+$string['instructauthors'] = "Resolution instructions";
+$string['instructreviewers'] = "Review instructions";
+$string['title'] = "Title";
+$string['content'] = "Content";
+$string['subfeedbackauthor'] = "Author feedback";
+$string['assessment'] = "Assessment";
+$string['assid'] = "ID";
+$string['assfeedbackauthor'] = "Reviewer feedback";
+$string['grade'] = "Grade";
+$string['gradid'] = "ID";
+$string['gradedescription'] = "Criteria";
+$string['peercomment'] = "Peer comment";
+$string['assgrade'] = "Total grade";
+$string['workname'] = "Workshop name";
+$string['workintroduction'] = "Workshop introduction";
+
+
+
+
+
+
+
+
+
+
+
+
