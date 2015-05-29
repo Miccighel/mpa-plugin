@@ -23,10 +23,9 @@ class local_mpa_renderer extends plugin_renderer_base
 
         $table = new html_table();
         $table->head = array(get_string('username', 'local_mpa'), get_string('ex_to_evaluate_solved', 'local_mpa'), get_string('ex_assessed', 'local_mpa'), get_string('grades', 'local_mpa'), get_string('assignments_solved', 'local_mpa'));
-
         foreach ($students_data as $student) {
-            $info = $student[4];
-            $table->data[] = array($student[4]->username, $student[0], $student[1], $student[2], $student[3]);
+            $info = $student->getProperties();
+            $table->data[] = array($info->username, $student->getAssignmentsSolved(), $student->getExToEvaluateSolved(), $student->getExAssessed(), $student->getGrades());
         }
 
         echo html_writer::table($table);
@@ -34,14 +33,14 @@ class local_mpa_renderer extends plugin_renderer_base
         echo $OUTPUT->footer();
     }
 
-    public function render_student_feedback($studentHandler)
+    public function render_student_feedback($logged_student)
     {
 
         global $OUTPUT;
 
         echo $OUTPUT->header();
 
-        $submissions = $studentHandler->getSubmissions();
+        $submissions = $logged_student->getSubmissions();
 
         foreach ($submissions as $submission) {
 
@@ -64,6 +63,7 @@ class local_mpa_renderer extends plugin_renderer_base
             echo html_writer::end_tag('tr');
             echo html_writer::end_tag('thead');
             echo html_writer::start_tag('tr');
+
             echo html_writer::tag('td', $subProperties->id);
             echo html_writer::tag('td', $subProperties->name);
             echo html_writer::tag('td', $subProperties->intro);
@@ -88,7 +88,6 @@ class local_mpa_renderer extends plugin_renderer_base
                 echo html_writer::tag('th', get_string('assid', 'local_mpa'), array('class' => 'header'));
                 echo html_writer::tag('th', get_string('assgrade', 'local_mpa'), array('class' => 'header'));
                 echo html_writer::tag('th', get_string('assfeedbackauthor', 'local_mpa'), array('class' => 'header'));
-                echo html_writer::tag('th', '', array('class' => 'header'));
                 echo html_writer::end_tag('tr');
                 echo html_writer::end_tag('thead');
                 echo html_writer::start_tag('tr');

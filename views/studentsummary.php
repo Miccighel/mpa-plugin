@@ -10,144 +10,48 @@
 
 require(dirname(__FILE__) . '/../../../config.php');
 require_once($CFG->dirroot . '/local/mpa/locallib.php');
+require_once($CFG->dirroot . '/local/mpa/classes/student.php');
 
 $userid = $USER->id;
 $usercontext = context_user::instance($userid);
+
 print_page_attributes('pluginname', 'pluginname', $usercontext, 'local');
 
 $renderer = $PAGE->get_renderer('local_mpa');
 
-$result = array();
-$data = array();
+$all_students = array();
+$final_students = array();
 
-$students = $DB->get_records_sql('SELECT id FROM {user}');
+$students = $DB->get_records_sql('SELECT id,username,firstname,lastname,email FROM {user}');
 
-// Impostazione di un array associativo dove la chiave è l'id dello studente.
 foreach ($students as $student) {
-    $result[$student->id] = array();
+    $object = new Student($student->id);
+    $object->setProperties($student);
+    $object->countAssignmentsSolved();
+    $object->countExAssessed();
+    $object->countExToEvaluateSolved();
+    $object->countGrades();
+    array_push($all_students, $object);
 }
 
-// Individuazione del numero di esercizi da valutare risolti per ciascun studente
-
-$students = $DB->get_records_sql('SELECT * FROM {workshop_submissions} AS mws INNER JOIN {user} AS mu ON mws.authorid=mu.id');
-
-if (!empty($students)) {
-    foreach ($students as $student) {
-        $data = array();
-        // Ottengo il conteggio di quello che ho ottenuto con la query precedente in base all'id dello studente.
-        $ex_to_evaluate_solved = $DB->count_records_sql('SELECT COUNT(*) FROM {workshop_submissions} WHERE authorid = ?', array($student->id));
-        // Ottengo l'array di dati del singolo studente salvati nell'array associativo, dove la chiave è l'id dello studente stesso.
-        $data = $result[$student->id];
-        // Inserisco il nuovo dato nell'array dello studente.
-        array_push($data, $ex_to_evaluate_solved);
-        // Aggiorno il l'array salvato in quello associativo globale con il nuovo array dedicato allo studente.
-        $result[$student->id] = $data;
-    }
-} else {
-    // Se non c'è almeno uno studente che abbia completato almeno una volta il task cercato, vengono inseriti zeri per tutti gli studenti.
-    foreach ($result as $key => $value) {
-        array_push($result[$key], 0);
+foreach ($all_students as $student) {
+    if ($student->getGrades() != 0 || $student->getExAssessed() != 0 || $student->getExToEvaluateSolved() != 0 || $student->getAssignmentsSolved() != 0) {
+        array_push($final_students, $student);
     }
 }
 
-// Individuazione del numero di esercizi valutati per ciascun studente
+foreach ($final_students as $student) {
 
-$students = $DB->get_records_sql('SELECT * FROM {workshop_assessments} AS mwa INNER JOIN {user} AS mu ON mwa.reviewerid=mu.id');
+    $temp = $DB->get_records_sql('SELECT * FROM {mpa_student_summary} WHERE id=?', array($student->id));
 
-if (!empty($students)) {
-    foreach ($students as $student) {
-        $data = array();
-        $ex_assessed = $DB->count_records_sql('SELECT COUNT(*) FROM {workshop_assessments} WHERE reviewerid = ?', array($student->id));
-        $data = $result[$student->id];
-        array_push($data, $ex_assessed);
-        $result[$student->id] = $data;
-    }
-} else {
-    foreach ($result as $key => $value) {
-        array_push($result[$key], 0);
-    }
-}
+    //Se lo studente non è presente nel db, viene inserito un nuovo record nella tabella con i dati relativi allo studente stesso, altrimenti il record stesso viene aggiornato
 
-// Individuazione del numero di voti assegnati per ciascun studente
-
-$students = $DB->get_records_sql('SELECT * FROM ({workshop_assessments} AS mwa INNER JOIN {workshop_grades} AS mwg ON mwa.id = mwg.assessmentid) INNER JOIN {user} AS mu ON mwa.reviewerid=mu.id');
-
-if (!empty($students)) {
-    foreach ($students as $student) {
-        $data = array();
-        $grades = $DB->count_records_sql('SELECT COUNT(*) FROM {workshop_assessments} AS mwa INNER JOIN {workshop_grades} AS mwg ON mwa.id = mwg.assessmentid WHERE reviewerid = ?', array($student->id));
-        $data = $result[$student->id];
-        array_push($data, $grades);
-        $result[$student->id] = $data;
-    }
-} else {
-    foreach ($result as $key => $value) {
-        array_push($result[$key], 0);
-    }
-}
-
-// Individuazione del numero di esercizi consegnati per ciascun studente
-
-$students = $DB->get_records_sql('SELECT * FROM {assign} AS ma INNER JOIN {assign_submission} AS mas ON ma.id=mas.assignment ');
-
-if (!empty($students)) {
-    foreach ($students as $student) {
-        $data = array();
-        $assignments_solved = $DB->count_records_sql('SELECT COUNT(*) FROM {assign_submission} WHERE userid = ?', array($student->userid));
-        $data = $result[$student->userid];
-        array_push($data, $assignments_solved);
-        $result[$student->userid] = $data;
-    }
-} else {
-    foreach ($result as $key => $value) {
-        array_push($result[$key], 0);
-    }
-}
-
-$students_data = array();
-$students_info = array();
-
-if (!empty($students)) {
-    // Per ogni studente presente nel db
-    foreach ($result as $student_id => $key_value) {
-        // Se lo studente ha quattro campi viene inserito nel vettore che verrà passato al renderer
-        if (sizeof($result[$student_id]) == 4) {
-            $students_data[$student_id] = $result[$student_id];
-        }
-        /* Se a questo punto un campo dell'array associativo ha meno di quattro elementi ma più di uno è perchè l'ultima query
-        non ha individuato assignment risolti per lo studente in oggetto, ma quelle precedenti rilevano che ha svolto assessment ed assegnato valutazioni.
-        Di conseguenza, va messo comunque tra i dati passati al renderer perchè dovrà essere mostrato nel riepilogo.
-        Viene dunque inserito uno zero tra i suoi dati ad indicare che non ha svolto, appunto, alcun assignment. */
-        if (sizeof($result[$student_id]) < 4 && sizeof($result[$student_id]) > 0) {
-            array_push($result[$student_id], 0);
-           $students_data[$student_id] = $result[$student_id];
-        }
-    }
-} else {
-    foreach ($result as $key => $value) {
-        array_push($result[$key], 0);
-    }
-}
-
-// Per ogni studente di cui sono stati calcolati i dati riassuntivi
-foreach($students_data as $student_id => $student_data){
-
-    $student = $DB->get_records_sql('SELECT * FROM {mpa_student_summary} WHERE id=?',array($student_id));
-    $temp = $DB->get_records_sql('SELECT * FROM {user} WHERE id=?',array($student_id));
-    // Ottengo tutte le informazioni relative allo studente estraendo l'oggetto dall'array restituito dall'interrogazione al db
-    $student_info = array_pop($temp);
-
-    // Se lo studente non è presente nel db, viene inserito un nuovo record nella tabella con i dati relativi allo studente stesso, altrimenti il record stesso viene aggiornato
-    if(empty($student)){
-       $DB->execute('INSERT INTO {mpa_student_summary} (id,ex_to_evaluate_solved,ex_assessed,grades,assignments_solved) VALUES (?,?,?,?,?)', $parms=array($student_id,$student_data[0],$student_data[1],$student_data[2],$student_data[3]));
+    if (empty($temp)) {
+        $DB->execute('INSERT INTO {mpa_student_summary} (id,ex_to_evaluate_solved,ex_assessed,grades,assignments_solved) VALUES (?,?,?,?,?)', $parms = array($student->id, $student->getExToEvaluateSolved(), $student->getExAssessed(), $student->getGrades(), $student->getAssignmentsSolved()));
     } else {
-        $DB->execute('UPDATE {mpa_student_summary} SET id=?, ex_to_evaluate_solved=?, ex_assessed=?, grades=?, assignments_solved=? WHERE id=?', $parms=array($student_id,$student_data[0],$student_data[1],$student_data[2],$student_data[3],$student_id));
+        $DB->execute('UPDATE {mpa_student_summary} SET id=?, ex_to_evaluate_solved=?, ex_assessed=?, grades=?, assignments_solved=? WHERE id=?', $parms = array($student->id, $student->getExToEvaluateSolved(), $student->getExAssessed(), $student->getGrades(), $student->getAssignmentsSolved(), $student->id));
     }
-
-    // Ai dati già calcolati relativi allo studente vengono aggiunte le informazioni del suo profilo
-    array_push($students_data[$student_id],$student_info);
 
 }
 
-// I dati ottenuti vengono passati al renderer
-echo $renderer->render_student_summary($students_data);
+echo $renderer->render_student_summary($final_students);
