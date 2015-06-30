@@ -12,10 +12,18 @@ require(dirname(__FILE__) . '/../../../config.php');
 require_once($CFG->dirroot . '/local/mpa/locallib.php');
 require_once($CFG->dirroot . '/local/mpa/classes/student.php');
 
-$userid = $USER->id;
-$usercontext = context_user::instance($userid);
+if (isloggedin()) {
 
-print_page_attributes('pluginname', 'pluginname', $usercontext, 'local');
+    $userid = $USER->id;
+    $usercontext = context_user::instance($userid);
+
+    print_page_attributes('pluginname', 'pluginname', $usercontext, 'local');
+
+} else {
+
+    print_page_attributes('pluginname', 'pluginname', null, 'local');
+
+}
 
 $renderer = $PAGE->get_renderer('local_mpa');
 
@@ -26,7 +34,7 @@ $students = $DB->get_records_sql('SELECT id,username,firstname,lastname,email FR
 
 foreach ($students as $student) {
     $object = new Student($student->id);
-    $object->setProperties($student);
+    $object->loadStudentProperties();
     $object->countAssignmentsSolved();
     $object->countExAssessed();
     $object->countExToEvaluateSolved();
@@ -39,6 +47,7 @@ foreach ($all_students as $student) {
         array_push($final_students, $student);
     }
 }
+
 
 foreach ($final_students as $student) {
 

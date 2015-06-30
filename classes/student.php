@@ -93,14 +93,19 @@ class Student
         return $this->submissions;
     }
 
+    function loadStudentProperties()
+    {
+
+        global $DB;
+
+        $this->setProperties($DB->get_records_sql('SELECT id,username,lastname,email FROM {user} WHERE id=?', array($this->id))[$this->id]);
+    }
 
     function loadStudentActivity()
     {
         global $DB;
 
         $submissions = $DB->get_records_sql('SELECT w.name,w.intro,w.instructauthors,w.instructreviewers,w.conclusion,mws.id,authorid,mws.feedbackauthor,title,content FROM ({workshop_submissions} AS mws INNER JOIN {user} AS mu ON mws.authorid=mu.id) INNER JOIN {workshop} AS w ON mws.workshopid=w.id WHERE mws.authorid=?', array($this->id));
-
-        $this->setProperties($DB->get_records_sql('SELECT id,username,lastname,email FROM {user} WHERE id=?', array($this->id)));
 
         foreach ($submissions as $object) {
             $submission = new Submission($object);

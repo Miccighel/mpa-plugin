@@ -130,6 +130,17 @@ class local_mpa_renderer extends plugin_renderer_base
         echo $OUTPUT->footer();
     }
 
+    public function render_student_scores(){
+
+        global $OUTPUT;
+
+        echo $OUTPUT->header();
+
+        echo 'TEST';
+
+        echo $OUTPUT->footer();
+    }
+
     public function render_capability_error()
     {
 
@@ -149,6 +160,18 @@ class local_mpa_renderer extends plugin_renderer_base
         echo $OUTPUT->header();
 
         echo "Pagina di learning";
+
+        echo $OUTPUT->footer();
+    }
+
+    public function render_login_required()
+    {
+
+        global $OUTPUT;
+
+        echo $OUTPUT->header();
+
+        echo get_string('loginrequired', 'local_mpa');
 
         echo $OUTPUT->footer();
     }

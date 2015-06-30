@@ -31,9 +31,18 @@ $capabilities = array(
             'manager'          => CAP_ALLOW
         )
     ),
+    'local/mpa:studentscore' => array (
+        'captype'      => 'write',
+        'contextlevel' => CONTEXT_USER,
+        'archetypes'   => array(
+            'teacher'        => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager'          => CAP_ALLOW
+        )
+    ),
     'local/mpa:studentfeedback' => array (
         'captype'      => 'write',
-        'contextlevel' => CONTEXT_SYSTEM,
+        'contextlevel' => CONTEXT_USER,
         'archetypes'   => array(
             'student'        => CAP_ALLOW,
             'teacher'        => CAP_ALLOW,

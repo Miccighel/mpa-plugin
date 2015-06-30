@@ -8,25 +8,34 @@
  * @copyright  2015, Michael Soprano, miccighel@gmail.com
  */
 
-require(dirname(__FILE__).'/../../config.php');
-require_once($CFG->dirroot.'/local/mpa/locallib.php');
+require(dirname(__FILE__) . '/../../config.php');
+require_once($CFG->dirroot . '/local/mpa/locallib.php');
 
-$userid = $USER->id;
-$usercontext = context_user::instance($userid);
-print_page_attributes('pluginname','pluginname',$usercontext,'local');
+if (isloggedin()) {
 
-$renderer = $PAGE->get_renderer('local_mpa');
+    $userid = $USER->id;
+    $usercontext = context_user::instance($userid);
+    print_page_attributes('pluginname', 'pluginname', $usercontext, 'local');
 
-if(has_capability('local/mpa:localoverview',$usercontext,$userid)){
+    $renderer = $PAGE->get_renderer('local_mpa');
 
-    // Ottengo i dati da passare al renderer
+    if (has_capability('local/mpa:localoverview', $usercontext, $userid)) {
 
-    echo $renderer->render_local_overview();
+        // Ottengo i dati da passare al renderer
+
+        echo $renderer->render_local_overview();
+
+    } else {
+        echo $renderer->render_capability_error();
+    }
 
 } else {
-    echo $renderer->render_capability_error();
-}
 
+    print_page_attributes('pluginname', 'pluginname', null, 'local');
+    $renderer = $PAGE->get_renderer('local_mpa');
+    echo $renderer->render_login_required();
+
+}
 
 
 

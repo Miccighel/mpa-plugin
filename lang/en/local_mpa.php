@@ -12,7 +12,7 @@
 
 $string['pluginname'] = 'Mizzaro - Peer assessment';
 $string['sitename'] = 'Laboratory of programming';
-$string['mpa:studentsummary'] = 'Student summary';
+$string['mpa:studentsummary'] = 'Summary of the students';
 $string['capabilityerror'] = "You're not allowed to view this resource.";
 $string['shortname'] = "MPA";
 $string['mpa:reportoverview'] = "Report overview";
@@ -21,7 +21,7 @@ $string['ex_assessed'] = "Exercises assessed";
 $string['grades'] = "Number of grades";
 $string['assignments_solved'] = "Exercises solved";
 $string['username'] = "Student";
-$string['mpa:studentfeedback'] = "View feedback";
+$string['mpa:studentfeedback'] = "Feedback for the student";
 $string['submission'] = "Submission";
 $string['subid'] = "ID";
 $string['introduction'] = "Introduction";
@@ -40,6 +40,9 @@ $string['peercomment'] = "Peer comment";
 $string['assgrade'] = "Total grade";
 $string['workname'] = "Workshop name";
 $string['workintroduction'] = "Workshop introduction";
+$string['loginrequired'] = "You have to be logged in to view this resource.";
+$string['mpa:studentscore'] = "Scores of the students";
+
 
 
 

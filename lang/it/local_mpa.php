@@ -12,7 +12,7 @@
 
 $string['pluginname'] = 'Mizzaro - Valutazione tra pari';
 $string['sitename'] = 'Laboratorio di programmazione';
-$string['mpa:studentsummary'] = "Riepilogo studenti";
+$string['mpa:studentsummary'] = "Riepilogo degli studenti";
 $string['capabilityerror'] = "Non ti è permesso visualizzare questa risorsa.";
 $string['shortname'] = "MVP";
 $string['mpa:reportoverview'] = "Riepilogo del report";
@@ -21,7 +21,7 @@ $string['ex_assessed'] = "Esercizi valutati";
 $string['grades'] = "Numero di voti assegnati";
 $string['assignments_solved'] = "Esercizi risolti";
 $string['username'] = "Studente";
-$string['mpa:studentfeedback'] = "Visualizza feedback";
+$string['mpa:studentfeedback'] = "Feedback per lo studente";
 $string['submission'] = "Consegna svolta";
 $string['subid'] = "Identificatore";
 $string['introduction'] = "Introduzione";
@@ -40,3 +40,6 @@ $string['peercomment'] = "Commento";
 $string['assgrade'] = "Voto totale";
 $string['workname'] = "Nome del workshop";
 $string['workintroduction'] = "Introduzione del workshop";
+$string['loginrequired'] = "Attenzione, per visualizzare la risorsa devi essere collegato";
+$string['mpa:studentscore'] = "Punteggi degli studenti";
+

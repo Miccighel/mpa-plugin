@@ -12,14 +12,24 @@ require(dirname(__FILE__) . '/../../../config.php');
 require_once($CFG->dirroot . '/local/mpa/locallib.php');
 require_once($CFG->dirroot . '/local/mpa/classes/student.php');
 
-$userid = $USER->id;
-$usercontext = context_user::instance($userid);
+if(isloggedin()) {
 
-print_page_attributes('pluginname', 'pluginname', $usercontext, 'local');
+    $userid = $USER->id;
+    $usercontext = context_user::instance($userid);
 
-$renderer = $PAGE->get_renderer('local_mpa');
+    print_page_attributes('pluginname', 'pluginname', $usercontext, 'local');
 
-$logged_student = new Student($userid);
-$logged_student->loadStudentActivity();
+    $renderer = $PAGE->get_renderer('local_mpa');
 
-echo $renderer->render_student_feedback($logged_student);
+    $logged_student = new Student($userid);
+    $logged_student->loadStudentActivity();
+
+    echo $renderer->render_student_feedback($logged_student);
+
+} else {
+
+    print_page_attributes('pluginname', 'pluginname', null, 'local');
+    $renderer = $PAGE->get_renderer('local_mpa');
+    echo $renderer->render_login_required();
+
+}
