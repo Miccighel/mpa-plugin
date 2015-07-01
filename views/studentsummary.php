@@ -27,27 +27,7 @@ if (isloggedin()) {
 
 $renderer = $PAGE->get_renderer('local_mpa');
 
-$all_students = array();
-$final_students = array();
-
-$students = $DB->get_records_sql('SELECT id,username,firstname,lastname,email FROM {user}');
-
-foreach ($students as $student) {
-    $object = new Student($student->id);
-    $object->loadStudentProperties();
-    $object->countAssignmentsSolved();
-    $object->countExAssessed();
-    $object->countExToEvaluateSolved();
-    $object->countGrades();
-    array_push($all_students, $object);
-}
-
-foreach ($all_students as $student) {
-    if ($student->getGrades() != 0 || $student->getExAssessed() != 0 || $student->getExToEvaluateSolved() != 0 || $student->getAssignmentsSolved() != 0) {
-        array_push($final_students, $student);
-    }
-}
-
+$final_students = get_active_students();
 
 foreach ($final_students as $student) {
 
