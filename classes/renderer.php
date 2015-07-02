@@ -58,7 +58,6 @@ class local_mpa_renderer extends plugin_renderer_base
             //echo html_writer::tag('th', get_string('instructreviewers', 'local_mpa'), array('class' => 'header'));
             echo html_writer::tag('th', get_string('responsetitle', 'local_mpa'), array('class' => 'header'));
             echo html_writer::tag('th', get_string('responsecontent', 'local_mpa'), array('class' => 'header'));
-            echo html_writer::tag('th', get_string('subfeedbackauthor', 'local_mpa'), array('class' => 'header'));
             echo html_writer::end_tag('tr');
             echo html_writer::end_tag('thead');
             echo html_writer::start_tag('tr');
@@ -69,7 +68,6 @@ class local_mpa_renderer extends plugin_renderer_base
             //echo html_writer::tag('td', $subProperties->instructreviewers);
             echo html_writer::tag('td', $subProperties->title);
             echo html_writer::tag('td', $subProperties->content);
-            echo html_writer::tag('td', $subProperties->feedbackauthor);
             echo html_writer::end_tag('tr');
             echo html_writer::end_tag('table');
 

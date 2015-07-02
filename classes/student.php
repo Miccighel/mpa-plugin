@@ -62,19 +62,19 @@ class Student
     {
         global $DB;
         //$data = $DB->get_records_sql('SELECT * FROM {workshop_assessments} AS mwa INNER JOIN {user} AS mu ON mwa.reviewerid=mu.id');
-        $this->exAssessed = $DB->count_records_sql('SELECT COUNT(*) FROM {workshop_assessments} WHERE reviewerid = ?', array($this->id));
+        $this->exAssessed = $DB->count_records_sql('SELECT COUNT(*) FROM {workshop_assessments} WHERE grade IS NOT NULL AND reviewerid = ?', array($this->id));
     }
 
     function countAssignedGrades()
     {
         global $DB;
         //$data = $DB->get_records_sql('SELECT * FROM ({workshop_assessments} AS mwa INNER JOIN {workshop_grades} AS mwg ON mwa.id = mwg.assessmentid) INNER JOIN {user} AS mu ON mwa.reviewerid=mu.id');
-        $this->assignedGrades = $DB->count_records_sql('SELECT COUNT(*) FROM {workshop_assessments} AS mwa INNER JOIN {workshop_submissions} AS mws ON mwa.submissionid=mws.id WHERE reviewerid=?', array($this->id));
+        $this->assignedGrades = $DB->count_records_sql('SELECT COUNT(*) FROM {workshop_assessments} AS mwa INNER JOIN {workshop_submissions} AS mws ON mwa.submissionid=mws.id WHERE mwa.grade IS NOT NULL AND reviewerid=?', array($this->id));
     }
 
     function countReceivedGrades(){
         global $DB;
-        $this->receivedGrades = $DB->count_records_sql('SELECT COUNT(*) FROM {workshop_submissions} AS mws INNER JOIN {workshop_assessments} AS mwa ON mws.id=mwa.submissionid WHERE mws.authorid=?', array($this->id));
+        $this->receivedGrades = $DB->count_records_sql('SELECT COUNT(*) FROM {workshop_submissions} AS mws INNER JOIN {workshop_assessments} AS mwa ON mws.id=mwa.submissionid WHERE mwa.grade IS NOT NULL AND mws.authorid=?', array($this->id));
     }
 
     function countAssignmentsSolved()
@@ -119,7 +119,7 @@ class Student
 
         foreach ($submissions as $object) {
             $submission = new Submission($object);
-            $assessments = $DB->get_records_sql('SELECT id,submissionid,feedbackauthor,grade FROM {workshop_assessments} WHERE submissionid=?', array($object->id));
+            $assessments = $DB->get_records_sql('SELECT id,submissionid,feedbackauthor,grade FROM {workshop_assessments} WHERE feedbackauthor IS NOT NULL AND submissionid=?', array($object->id));
             foreach ($assessments as $object) {
                 $assessment = new Assessment($object);
                 $grades = $DB->get_records_sql('SELECT wa.description,wg.id, wg.peercomment, wg.grade FROM {workshop_grades} AS wg INNER JOIN {workshopform_accumulative} AS wa ON wg.dimensionid=wa.id WHERE assessmentid=?', array($object->id));
