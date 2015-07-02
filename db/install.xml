@@ -6,9 +6,9 @@
 
 <XMLDB PATH="local/mpa/db" VERSION="2015070600" COMMENT="XMLDB file for Moodle report/mpa">
     <TABLES>
-        <TABLE NAME="mpa_student_summary" COMMENT="Data to create the summary for the students of the courses">
+        <TABLE NAME="mpa_student_summary" COMMENT="Data to create the summary of the students of the courses">
             <FIELDS>
-                <FIELD NAME="id" TYPE="int" DEFAULT="0" LENGTH="10" NOTNULL="true"/>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true"/>
                 <FIELD NAME="ex_to_evaluate_solved" TYPE="int" LENGTH="10" NOTNULL="false"/>
                 <FIELD NAME="ex_assessed" TYPE="int" LENGTH="10" NOTNULL="false"/>
                 <FIELD NAME="assigned_grades" TYPE="int" LENGTH="10" NOTNULL="false"/>
@@ -17,6 +17,33 @@
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+            </KEYS>
+        </TABLE>
+        <TABLE NAME="mpa_student_scores" COMMENT="Evaluator and solver score of the students of the courses">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true"/>
+                <FIELD NAME="solver_score" DEFAULT="0" TYPE="float" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="solver_steadiness" DEFAULT="0" TYPE="float" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="evaluator_score" DEFAULT="0" TYPE="float" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="evaluator_steadiness" DEFAULT="0" TYPE="float" LENGTH="10" NOTNULL="false"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+            </KEYS>
+        </TABLE>
+        <TABLE NAME="mpa_submission_data" COMMENT="Intermediate data to computer solver and evaluator scores of the students of the courses">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true"/>
+                <FIELD NAME="evaluatorid" TYPE="int" LENGTH="10" NOTNULL="true"/>
+                <FIELD NAME="solverid" TYPE="int" LENGTH="10" NOTNULL="true"/>
+                <FIELD NAME="submission_steadiness" DEFAULT="0" TYPE="float" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="submission_score" DEFAULT="0" TYPE="float" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="assessment_value" DEFAULT="0" TYPE="float" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="assessment_goodness" DEFAULT="0" TYPE="float" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="processed" TYPE="char" DEFAULT="false" NOTNULL="false"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id, evaluatorid, solverid"/>
             </KEYS>
         </TABLE>
     </TABLES>
