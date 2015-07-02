@@ -15,7 +15,7 @@ function print_page_attributes($title,$heading,$context,$layout){
     $PAGE->set_pagelayout($layout);
 }
 
-// Intuitivamente, ritorna gli studenti che hanno fatto qualcosa.
+// In poche parole, ritorna gli studenti che hanno fatto qualcosa.
 
 function get_active_students(){
 
@@ -33,12 +33,13 @@ function get_active_students(){
         $object->countAssignmentsSolved();
         $object->countExAssessed();
         $object->countExToEvaluateSolved();
-        $object->countGrades();
+        $object->countReceivedGrades();
+        $object->countAssignedGrades();
         array_push($all_students, $object);
     }
 
     foreach ($all_students as $student) {
-        if ($student->getGrades() != 0 || $student->getExAssessed() != 0 || $student->getExToEvaluateSolved() != 0 || $student->getAssignmentsSolved() != 0) {
+        if ($student->getExAssessed() != 0 || $student->getExToEvaluateSolved() != 0 || $student->getAssignmentsSolved() != 0) {
             array_push($final_students, $student);
         }
     }

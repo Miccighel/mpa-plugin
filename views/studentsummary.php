@@ -36,9 +36,9 @@ foreach ($final_students as $student) {
     //Se lo studente non è presente nel db, viene inserito un nuovo record nella tabella con i dati relativi allo studente stesso, altrimenti il record stesso viene aggiornato
 
     if (empty($temp)) {
-        $DB->execute('INSERT INTO {mpa_student_summary} (id,ex_to_evaluate_solved,ex_assessed,grades,assignments_solved) VALUES (?,?,?,?,?)', $parms = array($student->id, $student->getExToEvaluateSolved(), $student->getExAssessed(), $student->getGrades(), $student->getAssignmentsSolved()));
+        $DB->execute('INSERT INTO {mpa_student_summary} (id,ex_to_evaluate_solved,ex_assessed,assigned_grades,received_grades,assignments_solved) VALUES (?,?,?,?,?,?)', $parms = array($student->id, $student->getExToEvaluateSolved(), $student->getExAssessed(), $student->getAssignedGrades(), $student->getReceivedGrades(), $student->getAssignmentsSolved()));
     } else {
-        $DB->execute('UPDATE {mpa_student_summary} SET id=?, ex_to_evaluate_solved=?, ex_assessed=?, grades=?, assignments_solved=? WHERE id=?', $parms = array($student->id, $student->getExToEvaluateSolved(), $student->getExAssessed(), $student->getGrades(), $student->getAssignmentsSolved(), $student->id));
+        $DB->execute('UPDATE {mpa_student_summary} SET id=?, ex_to_evaluate_solved=?, ex_assessed=?, assigned_grades=?,received_grades=?, assignments_solved=? WHERE id=?', $parms = array($student->id, $student->getExToEvaluateSolved(), $student->getExAssessed(),$student->getAssignedGrades(), $student->getReceivedGrades(), $student->getAssignmentsSolved(), $student->id));
     }
 
 }

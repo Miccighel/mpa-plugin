@@ -23,8 +23,6 @@ if (isloggedin()) {
 
         $renderer = $PAGE->get_renderer('local_mpa');
 
-        define('threshold_assessments',1);
-
         $final_students = get_active_students();
 
         foreach ($final_students as $student) {

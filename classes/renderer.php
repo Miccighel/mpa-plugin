@@ -22,10 +22,10 @@ class local_mpa_renderer extends plugin_renderer_base
         echo $OUTPUT->header();
 
         $table = new html_table();
-        $table->head = array(get_string('username', 'local_mpa'), get_string('ex_to_evaluate_solved', 'local_mpa'), get_string('ex_assessed', 'local_mpa'), get_string('grades', 'local_mpa'), get_string('assignments_solved', 'local_mpa'));
+        $table->head = array(get_string('username', 'local_mpa'), get_string('ex_to_evaluate_solved', 'local_mpa'), get_string('ex_assessed', 'local_mpa'), get_string('assignments_solved', 'local_mpa'),get_string('assigned_grades', 'local_mpa'), get_string('received_grades', 'local_mpa'));
         foreach ($students_data as $student) {
             $info = $student->getProperties();
-            $table->data[] = array($info->username, $student->getAssignmentsSolved(), $student->getExToEvaluateSolved(), $student->getExAssessed(), $student->getGrades());
+            $table->data[] = array($info->username, $student->getExToEvaluateSolved(), $student->getExAssessed(),$student->getAssignmentsSolved(), $student->getAssignedGrades(),$student->getReceivedGrades());
         }
 
         echo html_writer::table($table);
@@ -52,23 +52,21 @@ class local_mpa_renderer extends plugin_renderer_base
             echo html_writer::start_tag('table', array('class' => 'generaltable'));
             echo html_writer::start_tag('thead');
             echo html_writer::start_tag('tr');
-            echo html_writer::tag('th', get_string('subid', 'local_mpa'), array('class' => 'header'));
             echo html_writer::tag('th', get_string('workname', 'local_mpa'), array('class' => 'header'));
             echo html_writer::tag('th', get_string('workintroduction', 'local_mpa'), array('class' => 'header'));
             echo html_writer::tag('th', get_string('instructauthors', 'local_mpa'), array('class' => 'header'));
-            echo html_writer::tag('th', get_string('instructreviewers', 'local_mpa'), array('class' => 'header'));
-            echo html_writer::tag('th', get_string('title', 'local_mpa'), array('class' => 'header'));
-            echo html_writer::tag('th', get_string('content', 'local_mpa'), array('class' => 'header'));
+            //echo html_writer::tag('th', get_string('instructreviewers', 'local_mpa'), array('class' => 'header'));
+            echo html_writer::tag('th', get_string('responsetitle', 'local_mpa'), array('class' => 'header'));
+            echo html_writer::tag('th', get_string('responsecontent', 'local_mpa'), array('class' => 'header'));
             echo html_writer::tag('th', get_string('subfeedbackauthor', 'local_mpa'), array('class' => 'header'));
             echo html_writer::end_tag('tr');
             echo html_writer::end_tag('thead');
             echo html_writer::start_tag('tr');
 
-            echo html_writer::tag('td', $subProperties->id);
             echo html_writer::tag('td', $subProperties->name);
             echo html_writer::tag('td', $subProperties->intro);
             echo html_writer::tag('td', $subProperties->instructauthors);
-            echo html_writer::tag('td', $subProperties->instructreviewers);
+            //echo html_writer::tag('td', $subProperties->instructreviewers);
             echo html_writer::tag('td', $subProperties->title);
             echo html_writer::tag('td', $subProperties->content);
             echo html_writer::tag('td', $subProperties->feedbackauthor);
@@ -85,13 +83,11 @@ class local_mpa_renderer extends plugin_renderer_base
                 echo html_writer::start_tag('table', array('class' => 'generaltable'));
                 echo html_writer::start_tag('thead');
                 echo html_writer::start_tag('tr');
-                echo html_writer::tag('th', get_string('assid', 'local_mpa'), array('class' => 'header'));
                 echo html_writer::tag('th', get_string('assgrade', 'local_mpa'), array('class' => 'header'));
                 echo html_writer::tag('th', get_string('assfeedbackauthor', 'local_mpa'), array('class' => 'header'));
                 echo html_writer::end_tag('tr');
                 echo html_writer::end_tag('thead');
                 echo html_writer::start_tag('tr');
-                echo html_writer::tag('td', $subProperties->id . '.' . $assProperties->id);
                 echo html_writer::tag('td', $assProperties->grade);
                 echo html_writer::tag('td', $assProperties->feedbackauthor);
                 echo html_writer::end_tag('tr');
@@ -101,7 +97,6 @@ class local_mpa_renderer extends plugin_renderer_base
 
                 echo html_writer::start_tag('table', array('class' => 'generaltable'));
                 echo html_writer::start_tag('tr');
-                echo html_writer::tag('th', get_string('gradid', 'local_mpa'), array('class' => 'header'));
                 echo html_writer::tag('th', get_string('gradedescription', 'local_mpa'), array('class' => 'header'));
                 echo html_writer::tag('th', get_string('grade', 'local_mpa'), array('class' => 'header'));
                 echo html_writer::tag('th', get_string('peercomment', 'local_mpa'), array('class' => 'header'));
@@ -112,7 +107,6 @@ class local_mpa_renderer extends plugin_renderer_base
                     $gradProperties = $grade->getProperties();
 
                     echo html_writer::start_tag('tr');
-                    echo html_writer::tag('td', $subProperties->id . '.' . $assProperties->id . '.' . $gradProperties->id);
                     echo html_writer::tag('td', $gradProperties->description);
                     echo html_writer::tag('td', $gradProperties->grade);
                     echo html_writer::tag('td', $gradProperties->peercomment);

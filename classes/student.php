@@ -16,7 +16,8 @@ class Student
     public $properties;
     public $exToEvalutateSolved = 0;
     public $exAssessed = 0;
-    public $grades = 0;
+    public $assignedGrades = 0;
+    public $receivedGrades = 0;
     public $assignmentsSolved = 0;
     public $submissions = array();
 
@@ -25,9 +26,14 @@ class Student
         $this->id = $id;
     }
 
-    function getGrades()
+    function getAssignedGrades()
     {
-        return $this->grades;
+        return $this->assignedGrades;
+    }
+
+    function getReceivedGrades()
+    {
+        return $this->receivedGrades;
     }
 
     function getExAssessed()
@@ -48,28 +54,33 @@ class Student
     function countExToEvaluateSolved()
     {
         global $DB;
-        $data = $DB->get_records_sql('SELECT * FROM {workshop_submissions} AS mws INNER JOIN {user} AS mu ON mws.authorid=mu.id');
+        //$data = $DB->get_records_sql('SELECT * FROM {workshop_submissions} AS mws INNER JOIN {user} AS mu ON mws.authorid=mu.id');
         $this->exToEvalutateSolved = $DB->count_records_sql('SELECT COUNT(*) FROM {workshop_submissions} WHERE authorid=?', array($this->id));
     }
 
     function countExAssessed()
     {
         global $DB;
-        $data = $DB->get_records_sql('SELECT * FROM {workshop_assessments} AS mwa INNER JOIN {user} AS mu ON mwa.reviewerid=mu.id');
+        //$data = $DB->get_records_sql('SELECT * FROM {workshop_assessments} AS mwa INNER JOIN {user} AS mu ON mwa.reviewerid=mu.id');
         $this->exAssessed = $DB->count_records_sql('SELECT COUNT(*) FROM {workshop_assessments} WHERE reviewerid = ?', array($this->id));
     }
 
-    function countGrades()
+    function countAssignedGrades()
     {
         global $DB;
-        $data = $DB->get_records_sql('SELECT * FROM ({workshop_assessments} AS mwa INNER JOIN {workshop_grades} AS mwg ON mwa.id = mwg.assessmentid) INNER JOIN {user} AS mu ON mwa.reviewerid=mu.id');
-        $this->grades = $DB->count_records_sql('SELECT COUNT(*) FROM {workshop_assessments} AS mwa INNER JOIN {workshop_grades} AS mwg ON mwa.id = mwg.assessmentid WHERE reviewerid=?', array($this->id));
+        //$data = $DB->get_records_sql('SELECT * FROM ({workshop_assessments} AS mwa INNER JOIN {workshop_grades} AS mwg ON mwa.id = mwg.assessmentid) INNER JOIN {user} AS mu ON mwa.reviewerid=mu.id');
+        $this->assignedGrades = $DB->count_records_sql('SELECT COUNT(*) FROM {workshop_assessments} AS mwa INNER JOIN {workshop_submissions} AS mws ON mwa.submissionid=mws.id WHERE reviewerid=?', array($this->id));
+    }
+
+    function countReceivedGrades(){
+        global $DB;
+        $this->receivedGrades = $DB->count_records_sql('SELECT COUNT(*) FROM {workshop_submissions} AS mws INNER JOIN {workshop_assessments} AS mwa ON mws.id=mwa.submissionid WHERE mws.authorid=?', array($this->id));
     }
 
     function countAssignmentsSolved()
     {
         global $DB;
-        $data = $DB->get_records_sql('SELECT * FROM {assign} AS ma INNER JOIN {assign_submission} AS mas ON ma.id=mas.assignment');
+        //$data = $DB->get_records_sql('SELECT * FROM {assign} AS ma INNER JOIN {assign_submission} AS mas ON ma.id=mas.assignment');
         $this->assignmentsSolved = $DB->count_records_sql('SELECT COUNT(*) FROM {assign_submission} WHERE userid = ?', array($this->id));
     }
 
@@ -97,7 +108,6 @@ class Student
     {
 
         global $DB;
-
         $this->setProperties($DB->get_records_sql('SELECT id,username,lastname,email FROM {user} WHERE id=?', array($this->id))[$this->id]);
     }
 

@@ -11,10 +11,9 @@
                 <FIELD NAME="id" TYPE="int" DEFAULT="0" LENGTH="10" NOTNULL="true"/>
                 <FIELD NAME="ex_to_evaluate_solved" TYPE="int" LENGTH="10" NOTNULL="false"/>
                 <FIELD NAME="ex_assessed" TYPE="int" LENGTH="10" NOTNULL="false"/>
-                <FIELD NAME="grades" TYPE="int" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="assigned_grades" TYPE="int" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="received_grades" TYPE="int" LENGTH="10" NOTNULL="false"/>
                 <FIELD NAME="assignments_solved" TYPE="int" LENGTH="10" NOTNULL="false"/>
-                <FIELD NAME="solver_score" TYPE="float" LENGTH="10" NOTNULL="false"/>
-                <FIELD NAME="evalutator_score" TYPE="float" LENGTH="10" NOTNULL="false"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
