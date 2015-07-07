@@ -40,7 +40,6 @@
                 <FIELD NAME="submission_score" DEFAULT="0" TYPE="float" LENGTH="10" NOTNULL="false"/>
                 <FIELD NAME="assessment_value" DEFAULT="0" TYPE="float" LENGTH="10" NOTNULL="false"/>
                 <FIELD NAME="assessment_goodness" DEFAULT="0" TYPE="float" LENGTH="10" NOTNULL="false"/>
-                <FIELD NAME="processed" TYPE="char" DEFAULT="false" NOTNULL="false"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id, evaluatorid, solverid"/>
