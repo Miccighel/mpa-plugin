@@ -37,7 +37,6 @@ if (isloggedin()) {
 
             $temp = $DB->get_records_sql('SELECT * FROM {mpa_submission_data} WHERE id=? AND evaluatorid=? AND solverid=?', array($submissionid,$evaluatorid,$solverid));
 
-
             if (empty($temp)) {
                 $DB->execute('INSERT INTO {mpa_submission_data} (id,evaluatorid,solverid,submission_steadiness,submission_score,assessment_value,assessment_goodness)
                     VALUES (?,?,?,?,?,?,?)',$parms=array($submissionid,$evaluatorid,$solverid,null,null,null,null));
@@ -46,6 +45,47 @@ if (isloggedin()) {
                     SET id=?, evaluatorid=?, solverid=?, submission_steadiness=?,submission_score=?, assessment_value=?,assessment_goodness=? WHERE id=? AND evaluatorid=? AND solverid=?',
                     $parms = array($submissionid,$evaluatorid,$solverid,null,null,null,null,$submissionid,$evaluatorid,$solverid));
             }
+
+            // Per la submission correntemente analizzata, vengono estratte le proprietà, gli assessment ed anche i voti parziali degli assessment al fine di calcolare i punteggi del risolutore e quelli del valutatore.
+
+            $temp = $DB->get_records_sql('SELECT * FROM {workshop_submissions} WHERE id=?', array($submissionid));
+
+            $current_submission = new Submission(array_pop($DB->get_records_sql('SELECT * FROM {workshop_submissions} WHERE id=?', array($submissionid))));
+
+            $current_submission->loadAssessments();
+            $current_assessments = $current_submission->getAssessments();
+
+            foreach($current_assessments as $current_assessment){
+
+                $current_assessment->loadGrades();
+                $current_grades = $current_assessment->getGrades();
+
+                foreach($current_grades as $current_grade) {
+
+                }
+
+            }
+
+            // Aggiorno i dati nella tabella degli score per il risolutore
+
+            $temp = $DB->get_records_sql('SELECT * FROM {mpa_student_scores} WHERE id=?', array($solverid));
+
+            if(empty($temp)){
+                $DB->execute('INSERT INTO {mpa_student_scores} (id,solver_score,solver_steadiness) VALUES(?,?,?)',array($solverid,null,null));
+            } else {
+                $DB->execute('UPDATE {mpa_student_scores} SET id=?, solver_score=?, solver_steadiness=? WHERE id=?', $parms = array($solverid,null,null,$solverid));
+            }
+
+            // Aggiorno i dati nella tabella degli score per il valutatore
+
+            $temp = $DB->get_records_sql('SELECT * FROM {mpa_student_scores} WHERE id=?', array($evaluatorid));
+
+            if(empty($temp)){
+                $DB->execute('INSERT INTO {mpa_student_scores} (id,evaluator_score,evaluator_steadiness) VALUES(?,?,?)',array($evaluatorid,null,null));
+            } else {
+                $DB->execute('UPDATE {mpa_student_scores} SET id=?, evaluator_score=?, evaluator_steadiness=? WHERE id=?', $parms = array($evaluatorid,null,null,$evaluatorid));
+            }
+
         }
 
         echo $renderer->render_student_scores();

@@ -138,11 +138,13 @@ class Student
 class Submission
 {
 
+    public $id;
     public $properties;
     public $assessments = array();
 
     function Submission($properties)
     {
+        $this->id = $properties->id;
         $this->properties = $properties;
     }
 
@@ -161,16 +163,27 @@ class Submission
         return $this->assessments;
     }
 
+    function loadAssessments() {
+        global $DB;
+        $assessments = $DB->get_records_sql('SELECT id,submissionid,feedbackauthor,grade FROM {workshop_assessments} WHERE feedbackauthor IS NOT NULL AND submissionid=?', array($this->id));
+        foreach($assessments as $assessmentProperties) {
+            $assessment = new Assessment($assessmentProperties);
+            $this->addAssessment($assessment);
+        }
+    }
+
 }
 
 class Assessment
 {
 
+    public $id;
     public $properties;
     public $grades = array();
 
     function Assessment($properties)
     {
+        $this->id = $properties->id;
         $this->properties = $properties;
     }
 
@@ -189,15 +202,26 @@ class Assessment
         return $this->grades;
     }
 
+    function loadGrades() {
+        global $DB;
+        $grades = $DB->get_records_sql('SELECT wa.description,wg.id, wg.peercomment, wg.grade FROM {workshop_grades} AS wg INNER JOIN {workshopform_accumulative} AS wa ON wg.dimensionid=wa.id WHERE assessmentid=?', array($this->id));
+        foreach($grades as $gradeProperties){
+            $grade = new Grade($gradeProperties);
+            $this->addGrade($grade);
+        }
+    }
+
 }
 
 class Grade
 {
 
+    public $id;
     public $properties;
 
     function Grade($properties)
     {
+        $this->id = $properties->id;
         $this->properties = $properties;
     }
 
