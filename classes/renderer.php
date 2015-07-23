@@ -10,6 +10,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/local/mpa/locallib.php');
+require_once($CFG->dirroot . '/local/mpa/classes/form.php');
 
 class local_mpa_renderer extends plugin_renderer_base
 {
@@ -22,10 +23,10 @@ class local_mpa_renderer extends plugin_renderer_base
         echo $OUTPUT->header();
 
         $table = new html_table();
-        $table->head = array(get_string('username', 'local_mpa'), get_string('ex_to_evaluate_solved', 'local_mpa'), get_string('ex_assessed', 'local_mpa'), get_string('assignments_solved', 'local_mpa'),get_string('assigned_grades', 'local_mpa'), get_string('received_grades', 'local_mpa'));
+        $table->head = array(get_string('username', 'local_mpa'), get_string('ex_to_evaluate_solved', 'local_mpa'), get_string('ex_assessed', 'local_mpa'), get_string('assignments_solved', 'local_mpa'), get_string('assigned_grades', 'local_mpa'), get_string('received_grades', 'local_mpa'));
         foreach ($students_data as $student) {
             $info = $student->getProperties();
-            $table->data[] = array($info->username, $student->getExToEvaluateSolved(), $student->getExAssessed(),$student->getAssignmentsSolved(), $student->getAssignedGrades(),$student->getReceivedGrades());
+            $table->data[] = array($info->username, $student->getExToEvaluateSolved(), $student->getExAssessed(), $student->getAssignmentsSolved(), $student->getAssignedGrades(), $student->getReceivedGrades());
         }
 
         echo html_writer::table($table);
@@ -61,7 +62,6 @@ class local_mpa_renderer extends plugin_renderer_base
             echo html_writer::end_tag('tr');
             echo html_writer::end_tag('thead');
             echo html_writer::start_tag('tr');
-
             echo html_writer::tag('td', $subProperties->name);
             echo html_writer::tag('td', $subProperties->intro);
             echo html_writer::tag('td', $subProperties->instructauthors);
@@ -91,7 +91,7 @@ class local_mpa_renderer extends plugin_renderer_base
                 echo html_writer::end_tag('tr');
                 echo html_writer::end_tag('table');
 
-                echo html_writer::tag('h4', get_string('grade', 'local_mpa'));
+                echo html_writer::tag('h4', get_string('grades', 'local_mpa'));
 
                 echo html_writer::start_tag('table', array('class' => 'generaltable'));
                 echo html_writer::start_tag('tr');
@@ -122,7 +122,8 @@ class local_mpa_renderer extends plugin_renderer_base
         echo $OUTPUT->footer();
     }
 
-    public function render_student_scores(){
+    public function render_student_scores()
+    {
 
         global $OUTPUT;
 
@@ -154,6 +155,70 @@ class local_mpa_renderer extends plugin_renderer_base
         echo "Pagina di learning";
 
         echo $OUTPUT->footer();
+    }
+
+    public function render_confidence_assignment($given_assessments, $logged_student)
+    {
+
+        global $OUTPUT, $DB;
+
+        echo $OUTPUT->header();
+
+        echo html_writer::tag('h2', get_string('confidencelevelassignment', 'local_mpa'));
+
+        echo html_writer::start_tag('table', array('class' => 'generaltable'));
+        echo html_writer::start_tag('thead');
+        echo html_writer::start_tag('tr');
+        echo html_writer::tag('th', get_string('workname', 'local_mpa'), array('class' => 'header'));
+        echo html_writer::tag('th', get_string('submission', 'local_mpa'), array('class' => 'header'));
+        echo html_writer::tag('th', get_string('grade', 'local_mpa'), array('class' => 'header'));
+        echo html_writer::tag('th', get_string('assfeedbackauthor', 'local_mpa'), array('class' => 'header'));
+        echo html_writer::tag('th', '', array('class' => 'header'));
+        echo html_writer::end_tag('tr');
+        echo html_writer::end_tag('thead');
+
+        foreach ($given_assessments as $assessment) {
+            $properties = $assessment->getProperties();
+            echo html_writer::start_tag('tr');
+            echo html_writer::tag('td', $properties->name);
+            echo html_writer::tag('td', $properties->content);
+            echo html_writer::tag('td', $properties->grade);
+            echo html_writer::tag('td', $properties->feedbackauthor);
+            echo html_writer::start_tag('td');
+            echo html_writer::tag('h5', get_string('actuallevel', 'local_mpa') . " " .$properties->confidence_level);
+            echo html_writer::end_tag('td');
+            echo html_writer::end_tag('tr');
+        }
+
+        echo html_writer::end_tag('table');
+
+        $form = new confidence_form(null, array('items' => sizeof($given_assessments)));
+
+        if ($form->is_cancelled()) {
+        } else if ($data = $form->get_data()) {
+            for ($i = 0; $i < sizeof($given_assessments); $i++) {
+                $identifier = 'level' . $i;
+                //echo $data->$identifier;
+
+                $student_id = $logged_student->id;
+                $properties = $given_assessments[$i]->getProperties();
+
+                $temp = $DB->get_records_sql('SELECT confidence_level FROM {mpa_submission_data} WHERE evaluatorid=? AND id=?', array($student_id, $properties->id));
+
+                if (empty($temp)) {
+                } else {
+                    if ($data->$identifier != get_string('notset', 'local_mpa')) {
+                        $DB->execute('UPDATE {mpa_submission_data} SET confidence_level=? WHERE evaluatorid=? AND id=?', $parms = array($data->$identifier, $student_id, $properties->id));
+                    }
+                }
+
+            }
+        } else {
+            $form->display();
+        }
+
+        echo $OUTPUT->footer();
+
     }
 
     public function render_login_required()

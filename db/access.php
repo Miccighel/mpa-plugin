@@ -50,4 +50,14 @@ $capabilities = array(
             'manager'          => CAP_ALLOW
         )
     ),
+    'local/mpa:confidenceassignment' => array (
+        'captype'      => 'write',
+        'contextlevel' => CONTEXT_USER,
+        'archetypes'   => array(
+            'student'        => CAP_ALLOW,
+            'teacher'        => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager'          => CAP_ALLOW
+        )
+    ),
 );

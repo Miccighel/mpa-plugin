@@ -30,9 +30,10 @@ $string['instructreviewers'] = "Review instructions";
 $string['responsetitle'] = "Title of the answer";
 $string['responsecontent'] = "Content of the answer";
 $string['subfeedbackauthor'] = "Teacher comment";
-$string['assessment'] = "Assessment";
+$string['assessment'] = "Assessment received";
 $string['assfeedbackauthor'] = "Reviewer comment";
 $string['grade'] = "Grade";
+$string['grades'] = "Grades";
 $string['gradedescription'] = "Criteria";
 $string['peercomment'] = "Reviewer comment";
 $string['assgrade'] = "Total grade";
@@ -40,6 +41,17 @@ $string['workname'] = "Exercise title";
 $string['workintroduction'] = "Exercise description";
 $string['loginrequired'] = "You have to be logged in to view this resource.";
 $string['mpa:studentscore'] = "Scores of the students";
+$string['mpa:confidenceassignment'] = "Confidence level of the assessments";
+$string['confidencelevelassignment'] = "Assignment of the confidence level for the assessment";
+$string['chosenlevel'] = "Insert the chosen level for the assessment";
+$string['actuallevel'] = "Actual level:";
+$string['submitlabel'] = "Send";
+$string['notset'] = "Not selected";
+
+
+
+
+
 
 
 

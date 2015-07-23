@@ -30,9 +30,10 @@ $string['instructreviewers'] = "Istruzioni di valutazione";
 $string['responsetitle'] = "Titolo della risposta";
 $string['responsecontent'] = "Contenuto della risposta";
 $string['subfeedbackauthor'] = "Commento del docente";
-$string['assessment'] = "Valutazione";
+$string['assessment'] = "Valutazione ricevuta";
 $string['assfeedbackauthor'] = "Commento del valutatore";
 $string['grade'] = "Voto";
+$string['grades'] = "Voti";
 $string['gradedescription'] = "Criterio";
 $string['peercomment'] = "Commento del valutatore";
 $string['assgrade'] = "Voto totale";
@@ -40,4 +41,14 @@ $string['workname'] = "Titolo dell'esercizio";
 $string['workintroduction'] = "Descrizione dell'esercizio";
 $string['loginrequired'] = "Attenzione, per visualizzare la risorsa devi essere collegato";
 $string['mpa:studentscore'] = "Punteggi degli studenti";
+$string['mpa:confidenceassignment'] = "Livello di confidenza delle valutazioni";
+$string['confidencelevelassignment'] = "Assegnamento del livello di confidenza";
+$string['chosenlevel'] = "Inserisci il livello di confidenza per l'assessment";
+$string['actuallevel'] = "Livello attuale:";
+$string['submitlabel'] = "Invia";
+$string['notset'] = "Non selezionato";
+
+
+
+
 
