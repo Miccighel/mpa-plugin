@@ -35,41 +35,44 @@ if (isloggedin()) {
             // Autore della risoluzioned
             $solverid = $submission_data->authorid;
 
+            // Elementi da calcolare
+
+            $steadiness=0;
+
             $temp = $DB->get_records_sql('SELECT * FROM {mpa_submission_data} WHERE id=? AND evaluatorid=? AND solverid=?', array($submissionid,$evaluatorid,$solverid));
 
             if (empty($temp)) {
                 $DB->execute('INSERT INTO {mpa_submission_data} (id,evaluatorid,solverid,submission_steadiness,submission_score,assessment_value,assessment_goodness)
                     VALUES (?,?,?,?,?,?,?)',$parms=array($submissionid,$evaluatorid,$solverid,0,0,0,0));
-            } else {
-                $DB->execute('UPDATE {mpa_submission_data}
-                    SET id=?, evaluatorid=?, solverid=?, submission_steadiness=?,submission_score=?, assessment_value=?,assessment_goodness=? WHERE id=? AND evaluatorid=? AND solverid=?',
-                    $parms = array($submissionid,$evaluatorid,$solverid,0,0,0,0,$submissionid,$evaluatorid,$solverid));
             }
 
             // Per la submission correntemente analizzata, vengono estratte le proprietà, gli assessment ed anche i voti parziali degli assessment al fine di calcolare i punteggi del risolutore e quelli del valutatore.
 
             $temp = $DB->get_records_sql('SELECT * FROM {workshop_submissions} WHERE id=?', array($submissionid));
 
-            $current_submission = new Submission(array_pop($DB->get_records_sql('SELECT * FROM {workshop_submissions} WHERE id=?', array($submissionid))));
+            $current_submission = new Submission($submission_data);
+            $current_submission_properties = $current_submission->getProperties();
 
             $current_submission->loadAssessments();
             $current_assessments = $current_submission->getAssessments();
 
             foreach($current_assessments as $current_assessment){
 
-                // TODO Controllo sul valore di confidenza a partire dall'id dell'assessment
+                $current_assessment_properties = $current_assessment->getProperties();
 
-                $current_assessment->loadGrades();
+                $confidence_level = array_pop($DB->get_records_sql('SELECT confidence_level FROM {mpa_submission_data} WHERE id=? AND evaluatorid=?', array($current_submission_properties->id,$current_assessment_properties->reviewerid)))->confidence_level/100;
 
-                /*$current_grades = $current_assessment->getGrades();
+                $steadiness+=($current_assessment_properties->grade*$confidence_level);
 
-                foreach($current_grades as $current_grade) {
+                echo '<pre>';
+                print_r($steadiness);
+                echo '</pre>';
 
-                }*/
+                // TODO Aggiorno i dati nella tabella submission_data
 
             }
-
-            // Aggiorno i dati nella tabella degli score per il risolutore
+            
+            // TODO Aggiorno i dati nella tabella degli score per il risolutore
 
             $temp = $DB->get_records_sql('SELECT * FROM {mpa_student_scores} WHERE id=?', array($solverid));
 
@@ -79,7 +82,7 @@ if (isloggedin()) {
                 $DB->execute('UPDATE {mpa_student_scores} SET id=?, solver_score=?, solver_steadiness=? WHERE id=?', $parms = array($solverid,0,0,$solverid));
             }
 
-            // Aggiorno i dati nella tabella degli score per il valutatore
+            // TODO Aggiorno i dati nella tabella degli score per il valutatore
 
             $temp = $DB->get_records_sql('SELECT * FROM {mpa_student_scores} WHERE id=?', array($evaluatorid));
 
@@ -92,6 +95,7 @@ if (isloggedin()) {
         }
 
         echo $renderer->render_student_scores();
+
     } else {
         echo $renderer->render_capability_error();
     }

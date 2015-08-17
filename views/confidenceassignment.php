@@ -24,6 +24,26 @@ if(isloggedin()) {
 
     $logged_student = new Student($userid);
 
+    $submissions_data = $DB->get_records_sql('SELECT * FROM {workshop_submissions} AS mws INNER JOIN {workshop_assessments} AS mwa ON mwa.submissionid=mws.id WHERE mwa.reviewerid!=mws.authorid', array());
+
+    foreach ($submissions_data as $submission_data) {
+
+        // ID della risoluzione
+        $submissionid = $submission_data->submissionid;
+        // Autore dell'assessment per la risoluzione
+        $evaluatorid = $submission_data->reviewerid;
+        // Autore della risoluzioned
+        $solverid = $submission_data->authorid;
+
+        $temp = $DB->get_records_sql('SELECT * FROM {mpa_submission_data} WHERE id=? AND evaluatorid=? AND solverid=?', array($submissionid, $evaluatorid, $solverid));
+
+        if (empty($temp)) {
+            $DB->execute('INSERT INTO {mpa_submission_data} (id,evaluatorid,solverid,submission_steadiness,submission_score,assessment_value,assessment_goodness)
+                    VALUES (?,?,?,?,?,?,?)', $parms = array($submissionid, $evaluatorid, $solverid, 0, 0, 0, 0));
+        }
+
+    }
+
     $given_assessments = $logged_student->loadGivenAssessments();
 
     $forms = array();

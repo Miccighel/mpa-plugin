@@ -179,7 +179,7 @@ class Submission
 
     function loadAssessments() {
         global $DB;
-        $assessments = $DB->get_records_sql('SELECT id,submissionid,feedbackauthor,grade FROM {workshop_assessments} WHERE feedbackauthor IS NOT NULL AND submissionid=?', array($this->id));
+        $assessments = $DB->get_records_sql('SELECT id,submissionid,reviewerid,feedbackauthor,grade FROM {workshop_assessments} WHERE feedbackauthor IS NOT NULL AND submissionid=?', array($this->id));
         foreach($assessments as $assessmentProperties) {
             $assessment = new Assessment($assessmentProperties);
             $this->addAssessment($assessment);

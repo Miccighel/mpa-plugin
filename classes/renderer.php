@@ -213,6 +213,10 @@ class local_mpa_renderer extends plugin_renderer_base
                 }
 
             }
+
+            $urltogo = new moodle_url(($CFG->wwwroot.'/local/mpa/views/confidenceassignment.php'), null, null, null);
+            redirect($urltogo);
+
         } else {
             $form->display();
         }
