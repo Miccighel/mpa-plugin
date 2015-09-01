@@ -39,7 +39,7 @@ if(isloggedin()) {
 
         if (empty($temp)) {
             $DB->execute('INSERT INTO {mpa_submission_data} (id,evaluatorid,solverid,submission_steadiness,submission_score,assessment_value,assessment_goodness)
-                    VALUES (?,?,?,?,?,?,?)', $parms = array($submissionid, $evaluatorid, $solverid, 0, 0, 0, 0));
+                    VALUES (?,?,?,?,?,?,?)', $parms = array($submissionid, $evaluatorid, $solverid, 0.0000000, 0.000000, 0.0000000, 0.000000));
         }
 
     }

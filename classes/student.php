@@ -110,6 +110,21 @@ class Student
         $this->setProperties($DB->get_records_sql('SELECT id,username,lastname,email FROM {user} WHERE id=?', array($this->id))[$this->id]);
     }
 
+    function isTeacher()
+    {
+        global $DB;
+
+        // Verifico se l'utente è un insegnante controllando se ha creato dei workshop
+
+        $workshops = $DB->get_records_sql('SELECT mwa.userid FROM {workshop_submissions} AS mws INNER JOIN {user} AS mu ON mws.userid=mu.id) WHERE mu.id=?', array($this->id));
+
+        if(empty($workshops)){
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     function loadStudentActivity()
     {
         global $DB;

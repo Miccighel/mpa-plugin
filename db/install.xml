@@ -22,10 +22,10 @@
         <TABLE NAME="mpa_student_scores" COMMENT="Evaluator and solver score of the students of the courses">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true"/>
-                <FIELD NAME="solver_score" DEFAULT="0" TYPE="float" LENGTH="10" NOTNULL="false"/>
-                <FIELD NAME="solver_steadiness" DEFAULT="0" TYPE="float" LENGTH="10" NOTNULL="false"/>
-                <FIELD NAME="evaluator_score" DEFAULT="0" TYPE="float" LENGTH="10" NOTNULL="false"/>
-                <FIELD NAME="evaluator_steadiness" DEFAULT="0" TYPE="float" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="solver_score" DEFAULT="0.000000" TYPE="number" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="solver_steadiness" DEFAULT="0.000000" TYPE="number" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="evaluator_score" DEFAULT="0.000001" TYPE="number" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="evaluator_steadiness" DEFAULT="0.000000" TYPE="number" LENGTH="10" NOTNULL="false"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -36,11 +36,11 @@
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true"/>
                 <FIELD NAME="evaluatorid" TYPE="int" LENGTH="10" NOTNULL="true"/>
                 <FIELD NAME="solverid" TYPE="int" LENGTH="10" NOTNULL="true"/>
-                <FIELD NAME="submission_steadiness" DEFAULT="0" TYPE="float" LENGTH="10" NOTNULL="false"/>
-                <FIELD NAME="submission_score" DEFAULT="0" TYPE="float" LENGTH="10" NOTNULL="false"/>
-                <FIELD NAME="assessment_value" DEFAULT="0" TYPE="float" LENGTH="10" NOTNULL="false"/>
-                <FIELD NAME="assessment_goodness" DEFAULT="0" TYPE="float" LENGTH="10" NOTNULL="false"/>
-                <FIELD NAME="confidence_level" DEFAULT="0" TYPE="float" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="submission_steadiness" DEFAULT="0.000000" TYPE="number" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="submission_score" DEFAULT="0.000000" TYPE="number" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="assessment_value" DEFAULT="0.000000" TYPE="number" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="assessment_goodness" DEFAULT="0.000000" TYPE="number" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="confidence_level" DEFAULT="0.000000" TYPE="number" LENGTH="10" NOTNULL="false"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id, evaluatorid, solverid"/>
