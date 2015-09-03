@@ -32,14 +32,11 @@ if(isloggedin()) {
         $submissionid = $submission_data->submissionid;
         // Autore dell'assessment per la risoluzione
         $evaluatorid = $submission_data->reviewerid;
-        // Autore della risoluzioned
-        $solverid = $submission_data->authorid;
 
-        $temp = $DB->get_records_sql('SELECT * FROM {mpa_submission_data} WHERE id=? AND evaluatorid=? AND solverid=?', array($submissionid, $evaluatorid, $solverid));
+        $temp = $DB->get_records_sql('SELECT * FROM {mpa_confidence_levels} WHERE id=? AND evaluatorid=?', array($submissionid, $evaluatorid));
 
         if (empty($temp)) {
-            $DB->execute('INSERT INTO {mpa_submission_data} (id,evaluatorid,solverid,submission_steadiness,submission_score,assessment_value,assessment_goodness)
-                    VALUES (?,?,?,?,?,?,?)', $parms = array($submissionid, $evaluatorid, $solverid, 0.0000000, 0.000000, 0.0000000, 0.000000));
+            $DB->execute('INSERT INTO {mpa_confidence_levels} (id,evaluatorid,confidence_level) VALUES (?,?,?)', $parms = array($submissionid, $evaluatorid, 0));
         }
 
     }

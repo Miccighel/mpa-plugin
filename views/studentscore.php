@@ -13,6 +13,7 @@ require_once($CFG->dirroot . '/local/mpa/locallib.php');
 require_once($CFG->dirroot . '/local/mpa/classes/student.php');
 
 define('MULTIPLIER',100);
+define('EPSILON',0.01);
 
 if (isloggedin()) {
 
@@ -37,47 +38,65 @@ if (isloggedin()) {
             // Autore della risoluzioned
             $solverid = $submission_data->authorid;
 
-            $temp = $DB->get_records_sql('SELECT * FROM {mpa_submission_data} WHERE id=? AND evaluatorid=? AND solverid=?', array($submissionid,$evaluatorid,$solverid));
+            /* La variabile submission_data contiene la tripla
+             submission - studente valutatore - studente risolutore con, in più,
+            anche i dati della valutazione eseguita dal valutatore */
 
-            if (empty($temp)) {
-                $DB->execute('INSERT INTO {mpa_submission_data} (id,evaluatorid,solverid,submission_steadiness,submission_score,assessment_value,assessment_goodness)
-                    VALUES (?,?,?,?,?,?,?)',$parms=array($submissionid,$evaluatorid,$solverid,0.000000,0.000000,0.0000000,0.0000000));
+            // Recupero del punteggio della submission al nuovo istante t0, se non è presente perchè quella in oggetto è la prima valutazione è zero.
+            // Stesso procedimento per la steadiness della submission
+
+            $mpa_data = $DB->get_records_sql('SELECT * FROM {mpa_submission_data} WHERE id=? AND evaluatorid=? AND solverid=?', array($submissionid,$evaluatorid,$solverid));
+            $temp = array_pop($mpa_data);
+
+            if(empty($mpda_data)){
+                $old_submission_steadiness = 0;
+                $old_submission_score = 0;
+            } else {
+                $old_submission_steadiness = $temp->submission_steadiness/MULTIPLIER;
+                $old_submission_score = $temp->submission_score/MULTIPLIER;
             }
 
-            $temp = $DB->get_records_sql('SELECT * FROM {mpa_student_scores} WHERE id=?', array($solverid));
+            // Recupero dei punteggi valutatore e risolutore al nuovo istante t0, se non sono presenti perchè quella in oggetto è la prima valutazione, il primo viene inizializzato con una quantità epsilon arbitrariamente piccola, mentre il secondo è posto a zero.
 
-            if(empty($temp)){
-                $DB->execute('INSERT INTO {mpa_student_scores} (id,solver_score,solver_steadiness) VALUES(?,?,?)',array($solverid,0.000000,0.000000));
+            $mpa_data = $DB->get_records_sql('SELECT * FROM {mpa_submission_data} WHERE evaluatorid=?', array($evaluatorid));
+            $temp = array_pop($mpa_data);
+
+            if(empty($mpda_data)){
+                $old_evaluator_score = EPSILON;
+                $old_solver_score = 0;
+            } else {
+                $old_evaluator_score = $temp->evaluator_score/MULTIPLIER;
+                $old_solver_score = $temp->solver_score/MULTIPLIER;
             }
 
-            $temp = $DB->get_records_sql('SELECT * FROM {mpa_student_scores} WHERE id=?', array($evaluatorid));
+            // Recupero del giudizio espresso dal valutatore
 
-            if(empty($temp)){
-                $DB->execute('INSERT INTO {mpa_student_scores} (id,evaluator_score,evaluator_steadiness) VALUES(?,?,?)',array($evaluatorid,0.000000,0.000000));
+            $assessment_value = $submission_data->grade;
+
+            // Recupero del livello di confidenza per l'assessment in oggetto. Se il valutatore non ha espresso tale valore, viene usato un valore molto piccolo epsilon.
+
+            $mpa_data = $DB->get_records_sql('SELECT * FROM {mpa_confidence_levels} WHERE id=? AND evaluatorid=?', array($submissionid,$evaluatorid));
+            $temp = array_pop($mpa_data);
+
+            if($temp->confidence_level==0){
+                $confidence_level=EPSILON;
+            } else {
+                $confidence_level=$temp->confidence_level/MULTIPLIER;
             }
 
-            // Per la submission correntemente analizzata, vengono estratte le proprietà, gli assessment ed anche i voti parziali degli assessment al fine di calcolare i punteggi del risolutore e quelli del valutatore.
+            // Adesso che i valori precedenti sono noti, scatta l'aggiornamento del punteggio della submission, del punteggio del valutatore e di quello del risolutore all'istante t1.
 
-            $temp = $DB->get_records_sql('SELECT * FROM {workshop_submissions} WHERE id=?', array($submissionid));
+            // Aggiornamento della steadiness della submission all'istante di tempo t1
 
-            $current_submission = new Submission($submission_data);
-            $current_submission_properties = $current_submission->getProperties();
-            $current_submission->loadAssessments();
-            $current_assessments = $current_submission->getAssessments();
+            $submission_steadiness = $old_submission_steadiness + ($old_evaluator_score * $confidence_level);
 
-            // Dati già presenti nelle tabelle del database per la submission correntemente analizzata
+            echo '<pre>';
+            print_r($submission_steadiness);
+            echo '</pre>';
 
-            $current_submission_data = $DB->get_records_sql('SELECT * FROM {mpa_submission_data} WHERE id=? AND evaluatorid=? AND solverid=?', array($submissionid,$evaluatorid,$solverid));
-            $current_evaluator_data = $DB->get_records_sql('SELECT * FROM {mpa_student_scores} WHERE id=?',array($evaluatorid));
-            $current_solver_data = $DB->get_records_sql('SELECT * FROM {mpa_student_scores} WHERE id=?',array($solverid));
+            // Aggiornamento per punteggio della submission all'istante di tempo t1
 
-            foreach($current_assessments as $current_assessment){
-
-                $current_assessment_properties = $current_assessment->getProperties();
-
-                $confidence_level = array_pop($DB->get_records_sql('SELECT confidence_level FROM {mpa_submission_data} WHERE id=? AND evaluatorid=?', array($current_submission_properties->id,$current_assessment_properties->reviewerid)))->confidence_level/100;
-
-            }
+            $submission_score = (($old_submission_steadiness * $old_submission_score) + ($old_evaluator_score * $assessment_value * $confidence_level)) / $submission_steadiness;
 
         }
 

@@ -203,12 +203,15 @@ class local_mpa_renderer extends plugin_renderer_base
                 $student_id = $logged_student->id;
                 $properties = $given_assessments[$i]->getProperties();
 
-                $temp = $DB->get_records_sql('SELECT confidence_level FROM {mpa_submission_data} WHERE evaluatorid=? AND id=?', array($student_id, $properties->id));
+                $temp = $DB->get_records_sql('SELECT confidence_level FROM {mpa_confidence_levels} WHERE evaluatorid=? AND id=?', array($student_id, $properties->id));
 
                 if (empty($temp)) {
+                    if ($data->$identifier != get_string('notset', 'local_mpa')) {
+                        $DB->execute('INSERT INTO {mpa_confidence_levels} (id,evaluatorid,confidence_level) VALUES (?,?,?)', $parms = array($properties->id, $student_id, $data->$identifier));
+                    }
                 } else {
                     if ($data->$identifier != get_string('notset', 'local_mpa')) {
-                        $DB->execute('UPDATE {mpa_submission_data} SET confidence_level=? WHERE evaluatorid=? AND id=?', $parms = array($data->$identifier, $student_id, $properties->id));
+                        $DB->execute('UPDATE {mpa_confidence_levels} SET confidence_level=? WHERE evaluatorid=? AND id=?', $parms = array($data->$identifier, $student_id, $properties->id));
                     }
                 }
 
