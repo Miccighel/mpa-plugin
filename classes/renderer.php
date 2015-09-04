@@ -12,6 +12,8 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/local/mpa/locallib.php');
 require_once($CFG->dirroot . '/local/mpa/classes/form.php');
 
+define('MULTIPLIER', 100000);
+
 class local_mpa_renderer extends plugin_renderer_base
 {
 
@@ -185,7 +187,7 @@ class local_mpa_renderer extends plugin_renderer_base
             echo html_writer::tag('td', $properties->grade);
             echo html_writer::tag('td', $properties->feedbackauthor);
             echo html_writer::start_tag('td');
-            echo html_writer::tag('h5', get_string('actuallevel', 'local_mpa') . " " .$properties->confidence_level);
+            echo html_writer::tag('h5', get_string('actuallevel', 'local_mpa') . " " . $properties->confidence_level / MULTIPLIER);
             echo html_writer::end_tag('td');
             echo html_writer::end_tag('tr');
         }
@@ -207,17 +209,17 @@ class local_mpa_renderer extends plugin_renderer_base
 
                 if (empty($temp)) {
                     if ($data->$identifier != get_string('notset', 'local_mpa')) {
-                        $DB->execute('INSERT INTO {mpa_confidence_levels} (id,evaluatorid,confidence_level) VALUES (?,?,?)', $parms = array($properties->id, $student_id, $data->$identifier));
+                        $DB->execute('INSERT INTO {mpa_confidence_levels} (id,evaluatorid,confidence_level) VALUES (?,?,?)', $parms = array($properties->id, $student_id, $data->$identifier * MULTIPLIER));
                     }
                 } else {
                     if ($data->$identifier != get_string('notset', 'local_mpa')) {
-                        $DB->execute('UPDATE {mpa_confidence_levels} SET confidence_level=? WHERE evaluatorid=? AND id=?', $parms = array($data->$identifier, $student_id, $properties->id));
+                        $DB->execute('UPDATE {mpa_confidence_levels} SET confidence_level=? WHERE evaluatorid=? AND id=?', $parms = array($data->$identifier * MULTIPLIER, $student_id, $properties->id));
                     }
                 }
 
             }
 
-            $urltogo = new moodle_url(($CFG->wwwroot.'/local/mpa/views/confidenceassignment.php'), null, null, null);
+            $urltogo = new moodle_url(($CFG->wwwroot . '/local/mpa/views/confidenceassignment.php'), null, null, null);
             redirect($urltogo);
 
         } else {
