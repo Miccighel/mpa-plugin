@@ -14,6 +14,7 @@ require_once($CFG->dirroot . '/local/mpa/classes/student.php');
 
 define('MULTIPLIER', 10000000);
 define('EPSILON', 0.01);
+define('GRADING_FACTOR',100);
 
 if (isloggedin()) {
 
@@ -50,13 +51,15 @@ if (isloggedin()) {
             if (empty($mpda_data)) {
                 $old_submission_steadiness = 0;
                 $old_submission_score = 0;
+                $old_assessment_goodness = 0;
             } else {
                 $temp = array_pop($mpa_data);
                 $old_submission_steadiness = $temp->submission_steadiness / MULTIPLIER;
                 $old_submission_score = $temp->submission_score / MULTIPLIER;
+                $old_assessment_goodness = $temp->assessment_goodness / MULTIPLIER;
             }
 
-            // Recupero dei punteggi valutatore e risolutore al nuovo istante ti, se non sono presenti perchè quella in oggetto è la prima valutazione, il primo viene inizializzato con una quantità epsilon arbitrariamente piccola, mentre il secondo è posto a zero.
+            // Recupero dei punteggi valutatore e risolutore (più relative stabilità) al nuovo istante ti, se non sono presenti perchè quella in oggetto è la prima valutazione, il primo viene inizializzato con una quantità epsilon arbitrariamente piccola, mentre il secondo è posto a zero.
 
             $mpa_data = $DB->get_records_sql('SELECT * FROM {mpa_submission_data} WHERE evaluatorid=? OR solverid=?', array($evaluatorid, $solverid));
 
@@ -75,7 +78,7 @@ if (isloggedin()) {
 
             // Recupero del giudizio espresso dal valutatore
 
-            $assessment_value = $submission_data->grade;
+            $assessment_value = $submission_data->grade/GRADING_FACTOR;
 
             // Recupero del livello di confidenza per l'assessment in oggetto. Se il valutatore non ha espresso tale valore, viene usato un valore molto piccolo epsilon.
 
@@ -118,6 +121,26 @@ if (isloggedin()) {
 
             $evaluator_score = (($old_evaluator_steadiness * $old_evaluator_score) + ($submission_steadiness * $assessment_goodness * $confidence_level)) / $evaluator_steadiness;
 
+            // Aggiornamento di stabilità e punteggio per i precedenti studenti valutatori. Il tempo che li caratterizza è dopo t0 e prima di ti+1.
+
+            $mpa_data = $DB->get_records_sql('SELECT msd.id,msd.evaluatorid,msd.submission_steadiness,msd.submission_score,mss.evaluator_steadiness,mss.evaluator_score FROM {mpa_submission_data} AS msd INNER JOIN {mpa_student_scores} AS mss ON msd.evaluatorid=mss.id WHERE msd.id=? AND evaluatorid!=?', array($submissionid, $evaluatorid));
+
+            foreach ($mpa_data as $previous_evaluator) {
+
+                $previous_evaluator_steadiness = $previous_evaluator->evaluator_steadiness / MULTIPLIER;
+                $previous_evaluator_score = $previous_evaluator->evaluator_score / MULTIPLIER;
+                $previous_assessment_goodness = $previous_evaluator->assessment_goodness / MULTIPLIER;
+                $previous_assessment_value = array_pop($DB->get_records_sql('SELECT grade FROM {workshop_assessments} WHERE submissionid=? AND reviewerid=?', array($submissionid, $previous_evaluator->evaluatorid)))->grade;
+                $previous_confidence_level = array_pop($DB->get_records_sql('SELECT confidence_level FROM {mpa_confidence_levels} WHERE id=? AND evaluatorid=?', array($submissionid, $previous_evaluator->evaluatorid)))->confidence_level / MULTIPLIER;
+                $new_evaluator_steadiness = $previous_evaluator_steadiness + ($old_evaluator_score * $confidence_level * $previous_confidence_level);
+                $new_assessment_goodness = 1 - sqrt(abs($previous_assessment_value - $submission_score));
+                $new_evaluator_score = (($previous_evaluator_steadiness * $previous_evaluator_score) - ($old_submission_steadiness * $previous_assessment_goodness * $previous_confidence_level) + ($submission_steadiness * $new_assessment_goodness * $previous_confidence_level)) / $new_evaluator_steadiness;
+
+                $mpa_data = $DB->execute('UPDATE {mpa_student_scores} SET evaluator_score=?, evaluator_steadiness=? WHERE id=?', array($new_evaluator_score * MULTIPLIER, $new_evaluator_steadiness * MULTIPLIER, $previous_evaluator->evaluatorid));
+                $mpa_data = $DB->execute('UPDATE {mpa_submission_data} SET assessment_goodness=? WHERE id=? AND evaluatorid=?', array($new_assessment_goodness * MULTIPLIER, $submissionid, $previous_evaluator->evaluatorid));
+
+            }
+
             // I valori calcolati per la tripla correntemente analizzata vengono inseriti nella base di dati
 
             $mpa_data = $DB->get_records_sql('SELECT * FROM {mpa_submission_data} WHERE id=? AND evaluatorid=? AND solverid=?', array($submissionid, $evaluatorid, $solverid));
@@ -148,26 +171,6 @@ if (isloggedin()) {
             } else {
                 $DB->execute('UPDATE {mpa_student_scores} SET solver_steadiness=?, solver_score=? WHERE id=?',
                     array($solver_steadiness * MULTIPLIER, $solver_steadiness * MULTIPLIER, $solverid));
-            }
-
-            // Aggiornamento di stabilità e punteggio per i precedenti studenti valutatori. Il tempo che li caratterizza è dopo t0 e prima di ti+1.
-
-            $mpa_data = $DB->get_records_sql('SELECT msd.id,msd.evaluatorid,msd.submission_steadiness,msd.submission_score,mss.evaluator_steadiness,mss.evaluator_score FROM {mpa_submission_data} AS msd INNER JOIN {mpa_student_scores} AS mss ON msd.evaluatorid=mss.id WHERE msd.id=? AND evaluatorid!=?', array($submissionid, $evaluatorid));
-
-            foreach ($mpa_data as $previous_evaluator) {
-
-                $previous_evaluator_steadiness = $previous_evaluator->evaluator_steadiness / MULTIPLIER;
-                $previous_evaluator_score = $previous_evaluator->evaluator_score / MULTIPLIER;
-                $previous_assessment_goodness = $previous_evaluator->assessment_goodness / MULTIPLIER;
-                $previous_assessment_value = array_pop($DB->get_records_sql('SELECT grade FROM {workshop_assessments} WHERE submissionid=? AND reviewerid=?', array($submissionid, $previous_evaluator->evaluatorid)))->grade;
-                $previous_confidence_level = array_pop($DB->get_records_sql('SELECT confidence_level FROM {mpa_confidence_levels} WHERE id=? AND evaluatorid=?', array($submissionid, $previous_evaluator->evaluatorid)))->confidence_level / MULTIPLIER;
-                $new_evaluator_steadiness = $previous_evaluator_steadiness + ($old_evaluator_score * $confidence_level * $previous_confidence_level);
-                $new_assessment_goodness = 1 - sqrt(abs($previous_assessment_value - $submission_score));
-                $new_evaluator_score = (($previous_evaluator_steadiness * $previous_evaluator_score) - ($old_submission_steadiness * $previous_assessment_goodness * $previous_confidence_level) + ($submission_steadiness * $new_assessment_goodness * $previous_confidence_level)) / $new_evaluator_steadiness;
-
-                $mpa_data = $DB->execute('UPDATE {mpa_student_scores} SET evaluator_score=?, evaluator_steadiness=? WHERE id=?', array($new_evaluator_score, $new_evaluator_steadiness, $previous_evaluator->evaluatorid));
-                $mpa_data = $DB->execute('UPDATE {mpa_submission_data} SET assessment_goodness=? WHERE id=? AND evaluatorid=?', array($new_assessment_goodness * MULTIPLIER, $submissionid, $previous_evaluator->evaluatorid));
-
             }
 
         }
