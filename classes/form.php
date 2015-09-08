@@ -30,4 +30,21 @@ class confidence_form extends moodleform
 
         $this->add_action_buttons($cancel = false, $submitlabel = null);
     }
-} 
+}
+
+class configuration_form extends moodleform
+{
+    public function definition()
+    {
+        global $CFG;
+
+        $mform = $this->_form;
+
+        $mform->addElement('text', 'epsilon', get_string('epsilon', 'local_mpa'));
+        $mform->addElement('text', 'gradingfactor', get_string('gradingfactor', 'local_mpa'));
+        $mform->addElement('text', 'infinity', get_string('infinity', 'local_mpa'));
+        $mform->addElement('text', 'teacherweight', get_string('teacherweight', 'local_mpa'));
+
+        $this->add_action_buttons($cancel = false, $submitlabel = null);
+    }
+}

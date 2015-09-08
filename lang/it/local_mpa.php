@@ -47,6 +47,17 @@ $string['chosenlevel'] = "Inserisci il livello di confidenza per l'assessment";
 $string['actuallevel'] = "Livello attuale:";
 $string['submitlabel'] = "Invia";
 $string['notset'] = "Non selezionato";
+$string['solver_score'] = "Punteggio risolutore";
+$string['evaluator_score'] = "Punteggio valutatore";
+$string['solver_steadiness'] = "Stabilità risolutore";
+$string['evaluator_steadiness'] = "Stabilità valutatore";
+$string['configurationinfo'] = "In questa pagina puoi definire i valori di alcune costanti necessarie al funzionamento del sistema.
+Nel caso in cui non venga specificato alcun valore, vengono usati i valori di default. I valori devono essere numeri.";
+$string['teacherweight'] = "Peso della valutazione del docente";
+$string['epsilon'] = "Valore per rappresentare epsilon";
+$string['infinity'] = "Valore per rappresentare l'infinito";
+$string['gradingfactor'] = "Fattore per normalizzare il voto delle valutazioni";
+$string['visitconfiguration'] = "Devi impostare i parametri presenti nella pagina di configurazione prima di poter usufruire di questa.";
 
 
 

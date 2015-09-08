@@ -71,7 +71,8 @@ class Student
         $this->assignedGrades = $DB->count_records_sql('SELECT COUNT(*) FROM {workshop_assessments} AS mwa INNER JOIN {workshop_submissions} AS mws ON mwa.submissionid=mws.id WHERE mwa.grade IS NOT NULL AND reviewerid=?', array($this->id));
     }
 
-    function countReceivedGrades(){
+    function countReceivedGrades()
+    {
         global $DB;
         $this->receivedGrades = $DB->count_records_sql('SELECT COUNT(*) FROM {workshop_submissions} AS mws INNER JOIN {workshop_assessments} AS mwa ON mws.id=mwa.submissionid WHERE mwa.grade IS NOT NULL AND mws.authorid=?', array($this->id));
     }
@@ -110,19 +111,40 @@ class Student
         $this->setProperties($DB->get_records_sql('SELECT id,username,lastname,email FROM {user} WHERE id=?', array($this->id))[$this->id]);
     }
 
-    function isTeacher()
+    function isTeacher($courseid)
     {
         global $DB;
 
-        // Verifico se l'utente è un insegnante controllando se ha creato dei workshop
-
-        $workshops = $DB->get_records_sql('SELECT mwa.userid FROM {workshop_submissions} AS mws INNER JOIN {user} AS mu ON mws.userid=mu.id) WHERE mu.id=?', array($this->id));
-
-        if(empty($workshops)){
-            return false;
+        if ($courseid == null) {
+            $flag = false;
         } else {
-            return true;
+
+            $context = get_context_instance(CONTEXT_COURSE, $courseid);
+            $roles = get_user_roles($context, $this->id);
+
+            foreach ($roles as $role) {
+
+                switch ($role->shortname) {
+                    case 'teacher':
+                        $flag = true;
+                        break;
+                    case 'editingteacher':
+                        $flag = true;
+                        break;
+                    case 'manager':
+                        $flag = true;
+                        break;
+                }
+
+                if (is_siteadmin($this->id)) {
+                    $flag = true;
+                }
+
+            }
         }
+
+        return $flag;
+
     }
 
     function loadStudentActivity()
@@ -151,10 +173,10 @@ class Student
     {
         global $DB;
 
-        $result=array();
+        $result = array();
 
-        $givenAssessments = $DB->get_records_sql('SELECT mws.id,mwa.feedbackauthor,mwa.grade,mws.content,mw.instructauthors,mw.name,mcl.confidence_level FROM (({workshop_assessments}  AS mwa INNER JOIN {workshop_submissions} AS mws ON mwa.submissionid=mws.id) INNER JOIN {workshop} AS mw ON mws.workshopid = mw.id) INNER JOIN {mpa_confidence_levels} AS mcl ON mwa.reviewerid=mcl.evaluatorid AND mwa.submissionid = mcl.id WHERE mwa.reviewerid=?',array($this->id));
-        foreach ($givenAssessments as $assessment){
+        $givenAssessments = $DB->get_records_sql('SELECT mws.id,mwa.feedbackauthor,mwa.grade,mws.content,mw.instructauthors,mw.name,mcl.confidence_level FROM (({workshop_assessments}  AS mwa INNER JOIN {workshop_submissions} AS mws ON mwa.submissionid=mws.id) INNER JOIN {workshop} AS mw ON mws.workshopid = mw.id) INNER JOIN {mpa_confidence_levels} AS mcl ON mwa.reviewerid=mcl.evaluatorid AND mwa.submissionid = mcl.id WHERE mwa.reviewerid=?', array($this->id));
+        foreach ($givenAssessments as $assessment) {
             array_push($result, new Assessment($assessment));
         }
 
@@ -192,10 +214,11 @@ class Submission
         return $this->assessments;
     }
 
-    function loadAssessments() {
+    function loadAssessments()
+    {
         global $DB;
         $assessments = $DB->get_records_sql('SELECT id,submissionid,reviewerid,feedbackauthor,grade FROM {workshop_assessments} WHERE feedbackauthor IS NOT NULL AND submissionid=?', array($this->id));
-        foreach($assessments as $assessmentProperties) {
+        foreach ($assessments as $assessmentProperties) {
             $assessment = new Assessment($assessmentProperties);
             $this->addAssessment($assessment);
         }
@@ -231,10 +254,11 @@ class Assessment
         return $this->grades;
     }
 
-    function loadGrades() {
+    function loadGrades()
+    {
         global $DB;
         $grades = $DB->get_records_sql('SELECT wa.description,wg.id, wg.peercomment, wg.grade FROM {workshop_grades} AS wg INNER JOIN {workshopform_accumulative} AS wa ON wg.dimensionid=wa.id WHERE assessmentid=?', array($this->id));
-        foreach($grades as $gradeProperties){
+        foreach ($grades as $gradeProperties) {
             $grade = new Grade($gradeProperties);
             $this->addGrade($grade);
         }

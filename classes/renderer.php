@@ -12,8 +12,6 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/local/mpa/locallib.php');
 require_once($CFG->dirroot . '/local/mpa/classes/form.php');
 
-define('MULTIPLIER', 100000);
-
 class local_mpa_renderer extends plugin_renderer_base
 {
 
@@ -124,14 +122,24 @@ class local_mpa_renderer extends plugin_renderer_base
         echo $OUTPUT->footer();
     }
 
-    public function render_student_scores()
+    public function render_student_scores($students_data)
     {
 
         global $OUTPUT;
 
         echo $OUTPUT->header();
 
-        echo 'TEST';
+        if ($students_data == null) {
+            echo get_string('visitconfiguration', 'local_mpa');
+        } else {
+            $table = new html_table();
+            $table->head = array(get_string('username', 'local_mpa'), get_string('solver_score', 'local_mpa'), get_string('evaluator_score', 'local_mpa'), get_string('solver_steadiness', 'local_mpa'), get_string('evaluator_steadiness', 'local_mpa'));
+
+            foreach ($students_data as $student) {
+                $table->data[] = array($student->username, $student->solver_score, $student->evaluator_score, $student->solver_steadiness, $student->evaluator_steadiness);
+            }
+            echo html_writer::table($table);
+        }
 
         echo $OUTPUT->footer();
     }
@@ -150,11 +158,48 @@ class local_mpa_renderer extends plugin_renderer_base
 
     public function render_local_overview()
     {
-        global $OUTPUT;
+        global $OUTPUT, $DB;
 
         echo $OUTPUT->header();
 
-        echo "Pagina di learning";
+        echo get_string('configurationinfo', 'local_mpa');
+
+        $form = new configuration_form(null, null);
+
+        if ($form->is_cancelled()) {
+        } else if ($data = $form->get_data()) {
+            $temp = $DB->get_records_sql('SELECT * FROM {mpa_configuration_info}');
+            $epsilon = $data->epsilon;
+            if ($epsilon == null) {
+                $epsilon = 0.01;
+            }
+            $infinity = $data->infinity;
+            if ($infinity == null) {
+                $infinity = 1000000;
+            }
+            $gradingfactor = $data->gradingfactor;
+            if ($gradingfactor == null) {
+                $gradingfactor = 100;
+            }
+            $teacherweight = $data->teacherweight;
+            if ($teacherweight == null) {
+                $teacherweight = 0.5;
+            }
+            if (empty($temp)) {
+                $DB->execute('INSERT INTO {mpa_configuration_info} (epsilon,infinity,grading_factor,teacher_weight) VALUES (?,?,?,?)', array($epsilon, $infinity, $gradingfactor, $teacherweight));
+            } else {
+                $old_conf = array_pop($temp);
+                $DB->execute('UPDATE {mpa_configuration_info} SET epsilon=?,infinity=?,grading_factor=?,teacher_weight=?
+                              WHERE epsilon=? AND infinity=? AND grading_factor=? AND teacher_weight=?',
+                    array($epsilon, $infinity, $gradingfactor, $teacherweight, $old_conf->epsilon, $old_conf->infinity, $old_conf->grading_factor, $old_conf->teacher_weight));
+            }
+
+            $urltogo = new moodle_url(($CFG->wwwroot . '/local/mpa/index.php'), null, null, null);
+            redirect($urltogo);
+
+        } else {
+            $form->display();
+        }
 
         echo $OUTPUT->footer();
     }
@@ -187,7 +232,7 @@ class local_mpa_renderer extends plugin_renderer_base
             echo html_writer::tag('td', $properties->grade);
             echo html_writer::tag('td', $properties->feedbackauthor);
             echo html_writer::start_tag('td');
-            echo html_writer::tag('h5', get_string('actuallevel', 'local_mpa') . " " . $properties->confidence_level / MULTIPLIER);
+            echo html_writer::tag('h5', get_string('actuallevel', 'local_mpa') . " " . $properties->confidence_level * 100);
             echo html_writer::end_tag('td');
             echo html_writer::end_tag('tr');
         }
@@ -209,11 +254,11 @@ class local_mpa_renderer extends plugin_renderer_base
 
                 if (empty($temp)) {
                     if ($data->$identifier != get_string('notset', 'local_mpa')) {
-                        $DB->execute('INSERT INTO {mpa_confidence_levels} (id,evaluatorid,confidence_level) VALUES (?,?,?)', $parms = array($properties->id, $student_id, $data->$identifier * MULTIPLIER));
+                        $DB->execute('INSERT INTO {mpa_confidence_levels} (id,evaluatorid,confidence_level) VALUES (?,?,?)', $parms = array($properties->id, $student_id, $data->$identifier / 100));
                     }
                 } else {
                     if ($data->$identifier != get_string('notset', 'local_mpa')) {
-                        $DB->execute('UPDATE {mpa_confidence_levels} SET confidence_level=? WHERE evaluatorid=? AND id=?', $parms = array($data->$identifier * MULTIPLIER, $student_id, $properties->id));
+                        $DB->execute('UPDATE {mpa_confidence_levels} SET confidence_level=? WHERE evaluatorid=? AND id=?', $parms = array($data->$identifier / 100, $student_id, $properties->id));
                     }
                 }
 

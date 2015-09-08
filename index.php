@@ -21,8 +21,6 @@ if (isloggedin()) {
 
     if (has_capability('local/mpa:localoverview', $usercontext, $userid)) {
 
-        // Ottengo i dati da passare al renderer
-
         echo $renderer->render_local_overview();
 
     } else {

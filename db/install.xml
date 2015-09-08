@@ -22,10 +22,10 @@
         <TABLE NAME="mpa_student_scores" COMMENT="Evaluator and solver score of the students of the courses">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true"/>
-                <FIELD NAME="solver_score" DEFAULT="0.000000" TYPE="number" LENGTH="10" NOTNULL="false"/>
-                <FIELD NAME="solver_steadiness" DEFAULT="0.000000" TYPE="number" LENGTH="10" NOTNULL="false"/>
-                <FIELD NAME="evaluator_score" DEFAULT="0.000001" TYPE="number" LENGTH="10" NOTNULL="false"/>
-                <FIELD NAME="evaluator_steadiness" DEFAULT="0.000000" TYPE="number" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="solver_score" DEFAULT="0" TYPE="float"  NOTNULL="false"/>
+                <FIELD NAME="solver_steadiness" DEFAULT="0" TYPE="float" NOTNULL="false"/>
+                <FIELD NAME="evaluator_score" DEFAULT="0.01" TYPE="float"  NOTNULL="false"/>
+                <FIELD NAME="evaluator_steadiness" DEFAULT="0" TYPE="float"  NOTNULL="false"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -37,9 +37,9 @@
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true"/>
                 <FIELD NAME="evaluatorid" TYPE="int" LENGTH="10" NOTNULL="true"/>
                 <FIELD NAME="solverid" TYPE="int" LENGTH="10" NOTNULL="true"/>
-                <FIELD NAME="submission_steadiness" DEFAULT="0.000000" TYPE="number" LENGTH="10" NOTNULL="false"/>
-                <FIELD NAME="submission_score" DEFAULT="0.000000" TYPE="number" LENGTH="10" NOTNULL="false"/>
-                <FIELD NAME="assessment_goodness" DEFAULT="0.000000" TYPE="number" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="submission_steadiness" DEFAULT="0" TYPE="float" NOTNULL="false"/>
+                <FIELD NAME="submission_score" DEFAULT="0" TYPE="float"  NOTNULL="false"/>
+                <FIELD NAME="assessment_goodness" DEFAULT="0" TYPE="float" NOTNULL="false"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id, evaluatorid, solverid"/>
@@ -49,10 +49,21 @@
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true"/>
                 <FIELD NAME="evaluatorid" TYPE="int" LENGTH="10" NOTNULL="true"/>
-                <FIELD NAME="confidence_level" DEFAULT="0.000000" TYPE="number" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="confidence_level" DEFAULT="0" TYPE="float" NOTNULL="true"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id, evaluatorid"/>
+            </KEYS>
+        </TABLE>
+        <TABLE NAME="mpa_configuration_info" COMMENT="Configuration of the plugin">
+            <FIELDS>
+                <FIELD NAME="epsilon" TYPE="float" NOTNULL="true"/>
+                <FIELD NAME="infinity" TYPE="float" NOTNULL="true"/>
+                <FIELD NAME="grading_factor" TYPE="float" NOTNULL="true"/>
+                <FIELD NAME="teacher_weight" TYPE="float" NOTNULL="true"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="epsilon,infinity,grading_factor,teacher_weight"/>
             </KEYS>
         </TABLE>
     </TABLES>

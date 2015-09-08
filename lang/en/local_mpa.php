@@ -47,7 +47,17 @@ $string['chosenlevel'] = "Insert the chosen level for the assessment";
 $string['actuallevel'] = "Actual level:";
 $string['submitlabel'] = "Send";
 $string['notset'] = "Not selected";
-
+$string['solver_score'] = "Solver score";
+$string['solver_steadiness'] = "Solver steadiness";
+$string['evaluator_score'] = "Evaluator score";
+$string['evaluator_steadiness'] = "Evaluator steadiness";
+$string['configurationinfo'] = "Here you can define the values of some constants necessary for the functioning of the system.
+If you do not specify any value, the default values will be used. The values must be numbers.";
+$string['teacherweight'] = "Weight of the assessment of the teacher";
+$string['epsilon'] = "Value to represent epsilon";
+$string['infinity'] = "Value to represent infinity";
+$string['gradingfactor'] = "Factor to normalize the grades";
+$string['visitconfiguration'] = "You have to set the parameters into the configuration page if you want to use this one.";
 
 
 
