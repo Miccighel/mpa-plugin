@@ -12,7 +12,7 @@ require(dirname(__FILE__) . '/../../../config.php');
 require_once($CFG->dirroot . '/local/mpa/locallib.php');
 require_once($CFG->dirroot . '/local/mpa/classes/student.php');
 
-if(isloggedin()) {
+if (isloggedin()) {
 
     $userid = $USER->id;
     $usercontext = context_user::instance($userid);

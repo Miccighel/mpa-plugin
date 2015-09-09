@@ -42,6 +42,7 @@ $string['workintroduction'] = "Descrizione dell'esercizio";
 $string['loginrequired'] = "Attenzione, per visualizzare la risorsa devi essere collegato";
 $string['mpa:studentscore'] = "Punteggi degli studenti";
 $string['mpa:confidenceassignment'] = "Livello di confidenza delle valutazioni";
+$string['mpa:exportdata'] = "Esporta i dati in formato CSV";
 $string['confidencelevelassignment'] = "Assegnamento del livello di confidenza";
 $string['chosenlevel'] = "Inserisci il livello di confidenza per l'assessment";
 $string['actuallevel'] = "Livello attuale:";

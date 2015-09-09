@@ -38,7 +38,7 @@ foreach ($final_students as $student) {
     if (empty($temp)) {
         $DB->execute('INSERT INTO {mpa_student_summary} (id,ex_to_evaluate_solved,ex_assessed,assigned_grades,received_grades,assignments_solved) VALUES (?,?,?,?,?,?)', $parms = array($student->id, $student->getExToEvaluateSolved(), $student->getExAssessed(), $student->getAssignedGrades(), $student->getReceivedGrades(), $student->getAssignmentsSolved()));
     } else {
-        $DB->execute('UPDATE {mpa_student_summary} SET id=?, ex_to_evaluate_solved=?, ex_assessed=?, assigned_grades=?,received_grades=?, assignments_solved=? WHERE id=?', $parms = array($student->id, $student->getExToEvaluateSolved(), $student->getExAssessed(),$student->getAssignedGrades(), $student->getReceivedGrades(), $student->getAssignmentsSolved(), $student->id));
+        $DB->execute('UPDATE {mpa_student_summary} SET id=?, ex_to_evaluate_solved=?, ex_assessed=?, assigned_grades=?,received_grades=?, assignments_solved=? WHERE id=?', $parms = array($student->id, $student->getExToEvaluateSolved(), $student->getExAssessed(), $student->getAssignedGrades(), $student->getReceivedGrades(), $student->getAssignmentsSolved(), $student->id));
     }
 
 }

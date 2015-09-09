@@ -13,7 +13,7 @@ require_once($CFG->dirroot . '/local/mpa/locallib.php');
 require_once($CFG->dirroot . '/local/mpa/classes/student.php');
 require_once($CFG->dirroot . '/local/mpa/classes/form.php');
 
-if(isloggedin()) {
+if (isloggedin()) {
 
     $userid = $USER->id;
     $usercontext = context_user::instance($userid);
@@ -45,11 +45,11 @@ if(isloggedin()) {
 
     $forms = array();
 
-    for($i=0;$i<sizeof($given_assessments);$i++){
-        array_push($forms,new confidence_form());
+    for ($i = 0; $i < sizeof($given_assessments); $i++) {
+        array_push($forms, new confidence_form());
     }
 
-    echo $renderer->render_confidence_assignment($given_assessments,$logged_student);
+    echo $renderer->render_confidence_assignment($given_assessments, $logged_student);
 
 } else {
 
