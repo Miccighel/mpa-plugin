@@ -175,7 +175,7 @@ class Student
 
         $result = array();
 
-        $givenAssessments = $DB->get_records_sql('SELECT mws.id,mwa.feedbackauthor,mwa.grade,mws.content,mw.instructauthors,mw.name,mcl.confidence_level FROM (({workshop_assessments}  AS mwa INNER JOIN {workshop_submissions} AS mws ON mwa.submissionid=mws.id) INNER JOIN {workshop} AS mw ON mws.workshopid = mw.id) INNER JOIN {mpa_confidence_levels} AS mcl ON mwa.reviewerid=mcl.evaluatorid AND mwa.submissionid = mcl.id WHERE mwa.reviewerid=?', array($this->id));
+        $givenAssessments = $DB->get_records_sql('SELECT mws.id,mwa.feedbackauthor,mwa.grade,mws.content,mw.instructauthors,mw.name,mcl.confidence_level FROM (({workshop_assessments}  AS mwa INNER JOIN {workshop_submissions} AS mws ON mwa.submissionid=mws.id) INNER JOIN {workshop} AS mw ON mws.workshopid = mw.id) INNER JOIN {mpa_confidence_levels} AS mcl ON mwa.reviewerid=mcl.evaluatorid AND mwa.submissionid = mcl.id WHERE mwa.reviewerid=? AND mwa.grade IS NOT NULL', array($this->id));
         foreach ($givenAssessments as $assessment) {
             array_push($result, new Assessment($assessment));
         }

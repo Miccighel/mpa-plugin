@@ -22,10 +22,10 @@
         <TABLE NAME="mpa_student_scores" COMMENT="Evaluator and solver score of the students of the courses">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true"/>
-                <FIELD NAME="solver_score" DEFAULT="0" TYPE="float"  NOTNULL="false"/>
-                <FIELD NAME="solver_steadiness" DEFAULT="0" TYPE="float" NOTNULL="false"/>
-                <FIELD NAME="evaluator_score" DEFAULT="0.01" TYPE="float"  NOTNULL="false"/>
-                <FIELD NAME="evaluator_steadiness" DEFAULT="0" TYPE="float"  NOTNULL="false"/>
+                <FIELD NAME="solver_score" TYPE="float"/>
+                <FIELD NAME="solver_steadiness" TYPE="float"/>
+                <FIELD NAME="evaluator_score" TYPE="float"/>
+                <FIELD NAME="evaluator_steadiness" TYPE="float"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -37,9 +37,9 @@
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true"/>
                 <FIELD NAME="evaluatorid" TYPE="int" LENGTH="10" NOTNULL="true"/>
                 <FIELD NAME="solverid" TYPE="int" LENGTH="10" NOTNULL="true"/>
-                <FIELD NAME="submission_steadiness" DEFAULT="0" TYPE="float" NOTNULL="false"/>
-                <FIELD NAME="submission_score" DEFAULT="0" TYPE="float"  NOTNULL="false"/>
-                <FIELD NAME="assessment_goodness" DEFAULT="0" TYPE="float" NOTNULL="false"/>
+                <FIELD NAME="submission_steadiness" TYPE="float"/>
+                <FIELD NAME="submission_score" TYPE="float"/>
+                <FIELD NAME="assessment_goodness" TYPE="float"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id, evaluatorid, solverid"/>
@@ -48,8 +48,8 @@
         <TABLE NAME="mpa_confidence_levels" COMMENT="Confidence levels for the assessments expressed by the students">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true"/>
-                <FIELD NAME="evaluatorid" TYPE="int" LENGTH="10" NOTNULL="true"/>
-                <FIELD NAME="confidence_level" DEFAULT="0" TYPE="float" NOTNULL="true"/>
+                <FIELD NAME="evaluatorid" TYPE="int" LENGTH="10"/>
+                <FIELD NAME="confidence_level" TYPE="float"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id, evaluatorid"/>

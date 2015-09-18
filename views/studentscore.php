@@ -38,9 +38,9 @@ if (isloggedin()) {
             define('TEACHER_WEIGHT', $configuration->teacher_weight);
 
             $submissions_data = $DB->get_records_sql('SELECT *
-        FROM {workshop_submissions} AS mws INNER JOIN {workshop_assessments} AS mwa ON mwa.submissionid=mws.id WHERE mwa.reviewerid!=mws.authorid',
+                FROM {workshop_submissions} AS mws INNER JOIN {workshop_assessments} AS mwa ON mws.id=mwa.submissionid WHERE mwa.reviewerid!=mws.authorid',
                 array());
-            
+
             foreach ($submissions_data as $submission_data) {
 
                 // ID della risoluzione
@@ -53,7 +53,9 @@ if (isloggedin()) {
                 // Verifica dello status di docente del valutatore per il corso corrente
 
                 $evaluator = new Student($evaluatorid);
-                $current_course_id = array_pop($DB->get_records_sql("SELECT mc.id FROM (({workshop_aggregations} AS mwa INNER JOIN {workshop} AS mw ON mwa.workshopid=mw.id) INNER JOIN {course} AS mc ON mw.course=mc.id) WHERE mwa.userid=?", array($evaluatorid)))->id;
+                $current_course_id = array_pop($DB->get_records_sql("SELECT mw.course  FROM ((({user} AS mu INNER JOIN {workshop_assessments} AS mwa ON mu.id=mwa.reviewerid)
+                                                                     INNER JOIN {workshop_submissions} AS mws ON mwa.submissionid=mws.id)
+                                                                       INNER JOIN {workshop} AS mw ON mws.workshopid=mw.id)", array($evaluatorid)))->course;
                 $is_teacher = $evaluator->isTeacher($current_course_id);
 
                 /* La variabile submission_data contiene la tripla
@@ -220,14 +222,16 @@ if (isloggedin()) {
 
             }
 
-
             $students_data = $DB->get_records_sql('SELECT * FROM {user} AS mu INNER JOIN {mpa_student_scores} AS mss ON mu.id=mss.id');
 
             echo $renderer->render_student_scores($students_data);
+
         }
 
     } else {
+
         echo $renderer->render_capability_error();
+
     }
 
 } else {
