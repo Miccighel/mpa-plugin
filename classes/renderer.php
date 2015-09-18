@@ -129,17 +129,14 @@ class local_mpa_renderer extends plugin_renderer_base
 
         echo $OUTPUT->header();
 
-        if ($students_data == null) {
-            echo get_string('visitconfiguration', 'local_mpa');
-        } else {
-            $table = new html_table();
-            $table->head = array(get_string('username', 'local_mpa'), get_string('solver_score', 'local_mpa'), get_string('evaluator_score', 'local_mpa'), get_string('solver_steadiness', 'local_mpa'), get_string('evaluator_steadiness', 'local_mpa'));
+        $table = new html_table();
+        $table->head = array(get_string('username', 'local_mpa'), get_string('solver_score', 'local_mpa'), get_string('evaluator_score', 'local_mpa'), get_string('solver_steadiness', 'local_mpa'), get_string('evaluator_steadiness', 'local_mpa'));
 
-            foreach ($students_data as $student) {
-                $table->data[] = array($student->username, $student->solver_score, $student->evaluator_score, $student->solver_steadiness, $student->evaluator_steadiness);
-            }
-            echo html_writer::table($table);
+        foreach ($students_data as $student) {
+            $table->data[] = array($student->username, $student->solver_score, $student->evaluator_score, $student->solver_steadiness, $student->evaluator_steadiness);
         }
+        echo html_writer::table($table);
+
 
         echo $OUTPUT->footer();
     }

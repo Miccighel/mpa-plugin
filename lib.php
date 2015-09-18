@@ -21,6 +21,6 @@ function local_mpa_extends_navigation(global_navigation $navigation)
     $baseMenu->add(get_string('mpa:exportdata', 'local_mpa'), new moodle_url($CFG->wwwroot . '/local/mpa/views/exportdata.php'), null, null, null);
 
     $baseMenu->forceopen = true;
-}
 
+}
 

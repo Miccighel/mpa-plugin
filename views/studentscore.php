@@ -22,14 +22,11 @@ if (isloggedin()) {
 
     if (has_capability('local/mpa:studentscore', $usercontext, $userid)) {
 
-        $submissions_data = $DB->get_records_sql('SELECT *
-        FROM {workshop_submissions} AS mws INNER JOIN {workshop_assessments} AS mwa ON mwa.submissionid=mws.id WHERE mwa.reviewerid!=mws.authorid', array());
-
         $configuration = $DB->get_records_sql('SELECT * FROM {mpa_configuration_info}');
 
         if (empty($configuration)) {
 
-            echo $renderer->render_student_scores(null);
+            echo get_string('visitconfiguration', 'local_mpa');
 
         } else {
 
@@ -40,6 +37,10 @@ if (isloggedin()) {
             define('INFINITY', $configuration->infinity);
             define('TEACHER_WEIGHT', $configuration->teacher_weight);
 
+            $submissions_data = $DB->get_records_sql('SELECT *
+        FROM {workshop_submissions} AS mws INNER JOIN {workshop_assessments} AS mwa ON mwa.submissionid=mws.id WHERE mwa.reviewerid!=mws.authorid',
+                array());
+            
             foreach ($submissions_data as $submission_data) {
 
                 // ID della risoluzione
