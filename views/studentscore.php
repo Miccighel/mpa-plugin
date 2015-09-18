@@ -156,13 +156,13 @@ if (isloggedin()) {
 
                 $solver_score = (($old_solver_steadiness * $old_solver_score) - ($function_value_old_submission_steadiness * $old_submission_score) + ($function_value_submission_steadiness * $submission_score)) / $solver_steadiness;
 
-                // Calcolo della bontà del giudizio correntemente analizzato espresso sulla submission dallo studente valutatore all'istante di tempo ti+1
-
-                $assessment_goodness = 1 - (sqrt(abs($assessment_value - $submission_score)));
-
                 // Calcolo della stabilità dello studente valutatore correntemente analizzato all'istante di tempo ti+1
 
                 $evaluator_steadiness = $old_evaluator_steadiness + ($submission_steadiness * $confidence_level);
+
+                // Calcolo della bontà del giudizio correntemente analizzato espresso sulla submission dallo studente valutatore all'istante di tempo ti+1
+
+                $assessment_goodness = 1 - (sqrt(abs($assessment_value - $submission_score)));
 
                 // Calcolo del punteggio dello studente valutatore correntemente analizzato all'istante di tempo ti+1
 
