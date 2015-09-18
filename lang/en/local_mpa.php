@@ -42,7 +42,7 @@ $string['workintroduction'] = "Exercise description";
 $string['loginrequired'] = "You have to be logged in to view this resource.";
 $string['mpa:studentscore'] = "Scores of the students";
 $string['mpa:confidenceassignment'] = "Confidence level of the assessments";
-$string['confidencelevelassignment'] = "Assignment of the confidence level for the assessment";
+$string['confidencelevelassignment'] = "Assignment of the confidence level for the assessments";
 $string['chosenlevel'] = "Insert the chosen level for the assessment";
 $string['actuallevel'] = "Actual level:";
 $string['submitlabel'] = "Send";
@@ -52,7 +52,7 @@ $string['solver_steadiness'] = "Solver steadiness";
 $string['evaluator_score'] = "Evaluator score";
 $string['evaluator_steadiness'] = "Evaluator steadiness";
 $string['configurationinfo'] = "Here you can define the values of some constants necessary for the functioning of the system.
-If you do not specify any value, the default values will be used. The values must be numbers.";
+If you do not specify any value, the default ones will be used. The values must be numbers.";
 $string['teacherweight'] = "Weight of the assessment of the teacher";
 $string['epsilon'] = "Value to represent epsilon";
 $string['infinity'] = "Value to represent infinity";

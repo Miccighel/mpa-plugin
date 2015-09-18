@@ -9,7 +9,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-// In questo file vengono definite le varie tipologie di azioni eseguibili nel report con i relativi permessi.
+// In questo file vengono definite le varie tipologie di azioni eseguibili nel plugin con i relativi permessi.
 
 $capabilities = array(
     'local/mpa:studentsummary' => array(

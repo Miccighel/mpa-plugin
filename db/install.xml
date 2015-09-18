@@ -32,7 +32,7 @@
             </KEYS>
         </TABLE>
         <TABLE NAME="mpa_submission_data"
-               COMMENT="Intermediate data to computer solver and evaluator scores of the students of the courses">
+               COMMENT="Intermediate data to compute solver and evaluator scores of the students of the courses">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true"/>
                 <FIELD NAME="evaluatorid" TYPE="int" LENGTH="10" NOTNULL="true"/>
