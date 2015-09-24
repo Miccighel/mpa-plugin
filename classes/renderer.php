@@ -43,10 +43,7 @@ class local_mpa_renderer extends plugin_renderer_base
 
         $submissions = $logged_student->getSubmissions();
 
-        foreach ($submissions as $submission) {
-
-            $subProperties = $submission->getProperties();
-            $assessments = $submission->getAssessments();
+        if (empty($submissions)) {
 
             echo html_writer::tag('h2', get_string('submission', 'local_mpa'));
 
@@ -55,67 +52,93 @@ class local_mpa_renderer extends plugin_renderer_base
             echo html_writer::start_tag('tr');
             echo html_writer::tag('th', get_string('workname', 'local_mpa'), array('class' => 'header'));
             echo html_writer::tag('th', get_string('workintroduction', 'local_mpa'), array('class' => 'header'));
-            echo html_writer::tag('th', get_string('instructauthors', 'local_mpa'), array('class' => 'header'));
+            //echo html_writer::tag('th', get_string('instructauthors', 'local_mpa'), array('class' => 'header'));
             //echo html_writer::tag('th', get_string('instructreviewers', 'local_mpa'), array('class' => 'header'));
-            echo html_writer::tag('th', get_string('responsetitle', 'local_mpa'), array('class' => 'header'));
+            //echo html_writer::tag('th', get_string('responsetitle', 'local_mpa'), array('class' => 'header'));
             echo html_writer::tag('th', get_string('responsecontent', 'local_mpa'), array('class' => 'header'));
             echo html_writer::end_tag('tr');
             echo html_writer::end_tag('thead');
             echo html_writer::start_tag('tr');
-            echo html_writer::tag('td', $subProperties->name);
-            echo html_writer::tag('td', $subProperties->intro);
-            echo html_writer::tag('td', $subProperties->instructauthors);
-            //echo html_writer::tag('td', $subProperties->instructreviewers);
-            echo html_writer::tag('td', $subProperties->title);
-            echo html_writer::tag('td', $subProperties->content);
             echo html_writer::end_tag('tr');
             echo html_writer::end_tag('table');
 
-            foreach ($assessments as $assessment) {
+        } else {
 
-                echo html_writer::tag('h3', get_string('assessment', 'local_mpa'));
+            foreach ($submissions as $submission) {
 
-                $assProperties = $assessment->getProperties();
-                $grades = $assessment->getGrades();
+                $subProperties = $submission->getProperties();
+                $assessments = $submission->getAssessments();
+
+                echo html_writer::tag('h2', get_string('submission', 'local_mpa'));
 
                 echo html_writer::start_tag('table', array('class' => 'generaltable'));
                 echo html_writer::start_tag('thead');
                 echo html_writer::start_tag('tr');
-                echo html_writer::tag('th', get_string('assgrade', 'local_mpa'), array('class' => 'header'));
-                echo html_writer::tag('th', get_string('assfeedbackauthor', 'local_mpa'), array('class' => 'header'));
+                echo html_writer::tag('th', get_string('workname', 'local_mpa'), array('class' => 'header'));
+                echo html_writer::tag('th', get_string('workintroduction', 'local_mpa'), array('class' => 'header'));
+                //echo html_writer::tag('th', get_string('instructauthors', 'local_mpa'), array('class' => 'header'));
+                //echo html_writer::tag('th', get_string('instructreviewers', 'local_mpa'), array('class' => 'header'));
+                //echo html_writer::tag('th', get_string('responsetitle', 'local_mpa'), array('class' => 'header'));
+                echo html_writer::tag('th', get_string('responsecontent', 'local_mpa'), array('class' => 'header'));
                 echo html_writer::end_tag('tr');
                 echo html_writer::end_tag('thead');
                 echo html_writer::start_tag('tr');
-                echo html_writer::tag('td', $assProperties->grade);
-                echo html_writer::tag('td', $assProperties->feedbackauthor);
+                echo html_writer::tag('td', $subProperties->name);
+                echo html_writer::tag('td', $subProperties->intro);
+                //echo html_writer::tag('td', $subProperties->instructauthors);
+                //echo html_writer::tag('td', $subProperties->instructreviewers);
+                //echo html_writer::tag('td', $subProperties->title);
+                echo html_writer::tag('td', $subProperties->content);
                 echo html_writer::end_tag('tr');
                 echo html_writer::end_tag('table');
 
-                echo html_writer::tag('h4', get_string('grades', 'local_mpa'));
+                foreach ($assessments as $assessment) {
 
-                echo html_writer::start_tag('table', array('class' => 'generaltable'));
-                echo html_writer::start_tag('tr');
-                echo html_writer::tag('th', get_string('gradedescription', 'local_mpa'), array('class' => 'header'));
-                echo html_writer::tag('th', get_string('grade', 'local_mpa'), array('class' => 'header'));
-                echo html_writer::tag('th', get_string('peercomment', 'local_mpa'), array('class' => 'header'));
-                echo html_writer::end_tag('tr');
+                    echo html_writer::tag('h3', get_string('assessment', 'local_mpa'));
 
-                foreach ($grades as $grade) {
+                    $assProperties = $assessment->getProperties();
+                    $grades = $assessment->getGrades();
 
-                    $gradProperties = $grade->getProperties();
-
+                    echo html_writer::start_tag('table', array('class' => 'generaltable'));
+                    echo html_writer::start_tag('thead');
                     echo html_writer::start_tag('tr');
-                    echo html_writer::tag('td', $gradProperties->description);
-                    echo html_writer::tag('td', $gradProperties->grade);
-                    echo html_writer::tag('td', $gradProperties->peercomment);
+                    echo html_writer::tag('th', get_string('assgrade', 'local_mpa'), array('class' => 'header'));
+                    echo html_writer::tag('th', get_string('assfeedbackauthor', 'local_mpa'), array('class' => 'header'));
+                    echo html_writer::end_tag('tr');
+                    echo html_writer::end_tag('thead');
+                    echo html_writer::start_tag('tr');
+                    echo html_writer::tag('td', $assProperties->grade);
+                    echo html_writer::tag('td', $assProperties->feedbackauthor);
+                    echo html_writer::end_tag('tr');
+                    echo html_writer::end_tag('table');
+
+                    echo html_writer::tag('h4', get_string('grades', 'local_mpa'));
+
+                    echo html_writer::start_tag('table', array('class' => 'generaltable'));
+                    echo html_writer::start_tag('tr');
+                    echo html_writer::tag('th', get_string('gradedescription', 'local_mpa'), array('class' => 'header'));
+                    echo html_writer::tag('th', get_string('grade', 'local_mpa'), array('class' => 'header'));
+                    echo html_writer::tag('th', get_string('peercomment', 'local_mpa'), array('class' => 'header'));
                     echo html_writer::end_tag('tr');
 
+                    foreach ($grades as $grade) {
+
+                        $gradProperties = $grade->getProperties();
+
+                        echo html_writer::start_tag('tr');
+                        echo html_writer::tag('td', $gradProperties->description);
+                        echo html_writer::tag('td', $gradProperties->grade);
+                        echo html_writer::tag('td', $gradProperties->peercomment);
+                        echo html_writer::end_tag('tr');
+
+                    }
+                    echo html_writer::end_tag('table');
+
                 }
-                echo html_writer::end_tag('table');
+
+                echo '____________________________________________________________________________________________________________________________________________________';
 
             }
-
-            echo '____________________________________________________________________________________________________________________________________________________';
 
         }
 

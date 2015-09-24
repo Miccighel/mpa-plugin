@@ -57,7 +57,7 @@ Nel caso in cui non venga specificato alcun valore, vengono usati i valori di de
 $string['teacherweight'] = "Peso della valutazione del docente";
 $string['epsilon'] = "Valore per rappresentare epsilon";
 $string['infinity'] = "Valore per rappresentare l'infinito";
-$string['gradingfactor'] = "Fattore per normalizzare il voto delle valutazioni";
+$string['gradingfactor'] = "Voto massimo per una valutazione";
 $string['visitconfiguration'] = "Devi impostare i parametri presenti nella pagina di configurazione prima di poter usufruire di questa.";
 
 

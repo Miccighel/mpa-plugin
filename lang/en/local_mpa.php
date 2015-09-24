@@ -56,7 +56,7 @@ If you do not specify any value, the default ones will be used. The values must 
 $string['teacherweight'] = "Weight of the assessment of the teacher";
 $string['epsilon'] = "Value to represent epsilon";
 $string['infinity'] = "Value to represent infinity";
-$string['gradingfactor'] = "Factor to normalize the grades";
+$string['gradingfactor'] = "Maximum grade for an assessment";
 $string['mpa:exportdata'] = "Export data in CSV format";
 $string['visitconfiguration'] = "You have to set the parameters into the configuration page if you want to use this one.";
 
