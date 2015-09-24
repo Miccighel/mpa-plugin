@@ -306,4 +306,16 @@ class local_mpa_renderer extends plugin_renderer_base
 
         echo $OUTPUT->footer();
     }
+
+    public function render_configuration_required()
+    {
+
+        global $OUTPUT;
+
+        echo $OUTPUT->header();
+
+        echo get_string('visitconfiguration', 'local_mpa');
+
+        echo $OUTPUT->footer();
+    }
 }

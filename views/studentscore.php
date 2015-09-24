@@ -26,7 +26,7 @@ if (isloggedin()) {
 
         if (empty($configuration)) {
 
-            echo get_string('visitconfiguration', 'local_mpa');
+            echo $renderer->render_configuration_required();
 
         } else {
 
