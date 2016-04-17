@@ -38,6 +38,7 @@ $string['gradedescription'] = "Criterio";
 $string['peercomment'] = "Commento del valutatore";
 $string['assgrade'] = "Voto totale";
 $string['workname'] = "ID Valutazione";
+$string['workid'] = "Workshop";
 $string['workintroduction'] = "Descrizione dell'esercizio";
 $string['loginrequired'] = "Attenzione, per visualizzare la risorsa devi essere collegato";
 $string['mpa:studentscore'] = "Punteggi degli studenti";

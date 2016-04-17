@@ -38,6 +38,7 @@ $string['gradedescription'] = "Criteria";
 $string['peercomment'] = "Reviewer comment";
 $string['assgrade'] = "Total grade";
 $string['workname'] = "Assessment ID";
+$string['workid'] = "Workshop";
 $string['workintroduction'] = "Exercise description";
 $string['loginrequired'] = "You have to be logged in to view this resource.";
 $string['mpa:studentscore'] = "Scores of the students";
