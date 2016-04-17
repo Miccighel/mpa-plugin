@@ -13,4 +13,4 @@ $plugin->version   = 2015090801;    // Versione corrente del plugin.
 $plugin->requires  = 2014111005;    // Versione moodle richiesta.
 $plugin->component = 'local_mpa';  // Nome del plugin.
 $plugin->maturity = MATURITY_STABLE; // Maturità del plugin.
-$plugin->release = 'v1.0';
+$plugin->release = 'v1.0.1';
