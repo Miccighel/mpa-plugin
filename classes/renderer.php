@@ -238,10 +238,10 @@ class local_mpa_renderer extends plugin_renderer_base
         echo html_writer::start_tag('tr');
         echo html_writer::tag('th', get_string('workname', 'local_mpa'), array('class' => 'header'));
         echo html_writer::tag('th', get_string('workid', 'local_mpa'), array('class' => 'header'));
-        echo html_writer::tag('th', get_string('submission', 'local_mpa'), array('class' => 'header'));
+        echo html_writer::tag('th', get_string('actuallevel', 'local_mpa'), array('class' => 'header'));
         echo html_writer::tag('th', get_string('grade', 'local_mpa'), array('class' => 'header'));
         echo html_writer::tag('th', get_string('assfeedbackauthor', 'local_mpa'), array('class' => 'header'));
-        echo html_writer::tag('th', '', array('class' => 'header'));
+        echo html_writer::tag('th', get_string('submission', 'local_mpa'), array('class' => 'header'));
         echo html_writer::end_tag('tr');
         echo html_writer::end_tag('thead');
 
@@ -251,12 +251,10 @@ class local_mpa_renderer extends plugin_renderer_base
             echo html_writer::start_tag('tr');
             echo html_writer::tag('td', $counter, array('class' => 'confidence-table-cell'));
             echo html_writer::tag('td', $properties->name, array('class' => 'confidence-table-cell'));
-            echo html_writer::tag('td', $properties->content, array('class' => 'confidence-table-cell'));
+            echo html_writer::tag('td', $properties->confidence_level * 100, array('class' => 'confidence-table-cell'));
             echo html_writer::tag('td', $properties->grade, array('class' => 'confidence-table-cell'));
             echo html_writer::tag('td', $properties->feedbackauthor, array('class' => 'confidence-table-cell'));
-            echo html_writer::start_tag('td');
-            echo html_writer::tag('h5', get_string('actuallevel', 'local_mpa') . " " . $properties->confidence_level * 100);
-            echo html_writer::end_tag('td');
+            echo html_writer::tag('td', $properties->content, array('class' => 'confidence-table-cell'));
             echo html_writer::end_tag('tr');
             $counter++;
         }
