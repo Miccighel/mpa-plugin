@@ -37,11 +37,23 @@ if (isloggedin()) {
             define('INFINITY', $configuration->infinity);
             define('TEACHER_WEIGHT', $configuration->teacher_weight);
 
+            $date = date('Y-m-d H:i:s');
+            $log = fopen("../log/Log.txt","w");
+            fwrite($log,"INIZIO DEL LOG PER IL CALCOLO DEI PUNTEGGI IN DATA: ".$date."\n");
+            fclose($log);
+
             $submissions_data = $DB->get_records_sql('SELECT *
                 FROM {workshop_submissions} AS mws INNER JOIN {workshop_assessments} AS mwa ON mws.id=mwa.submissionid WHERE mwa.reviewerid!=mws.authorid',
                 array());
 
+            $submission_counter = 1;
+            $log = fopen("../log/Log.txt","a");
+            fwrite($log,"INIZIO DELLA FASE DI ANALISI DEGLI ASSESSMENT\n");
+            fwrite($log,"CI SONO ".count($submissions_data)." ASSESSMENT DA PROCESSARE\n");
+
             foreach ($submissions_data as $submission_data) {
+
+                fwrite($log,"ANALISI DELL'ASSESSMENT NUMERO ".$submission_counter." IN CORSO\n");
 
                 // ID della risoluzione
                 $submissionid = $submission_data->submissionid;
@@ -186,6 +198,8 @@ if (isloggedin()) {
                     $mpa_data = $DB->execute('UPDATE {mpa_student_scores} SET evaluator_score=?, evaluator_steadiness=? WHERE id=?', array($new_evaluator_score, $new_evaluator_steadiness, $previous_evaluator->evaluatorid));
                     $mpa_data = $DB->execute('UPDATE {mpa_submission_data} SET assessment_goodness=? WHERE id=? AND evaluatorid=?', array($new_assessment_goodness, $submissionid, $previous_evaluator->evaluatorid));
 
+                    $evaluators_counter++;
+
                 }
 
                 // I valori calcolati per la tripla correntemente analizzata vengono inseriti nella base di dati
@@ -220,9 +234,19 @@ if (isloggedin()) {
                         array($solver_steadiness, $solver_steadiness, $solverid));
                 }
 
+                $submission_counter++;
+
             }
 
+            fwrite($log,"FINE DELLA FASE DI ANALISI DEGLI ASSESSMENT\n");
+
+            fwrite($log,"INIZIO DELLA FASE DI RECUPERO DEI DATI DA INVIARE ALLA VISTA\n");
+
             $students_data = $DB->get_records_sql('SELECT * FROM {user} AS mu INNER JOIN {mpa_student_scores} AS mss ON mu.id=mss.id');
+
+            fwrite($log,"FINE DELLA FASE DI RECUPERO\n");
+
+            fwrite($log,"FINE DEL LOG\n");
 
             echo $renderer->render_student_scores($students_data);
 
