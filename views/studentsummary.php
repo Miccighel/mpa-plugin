@@ -29,7 +29,17 @@ $renderer = $PAGE->get_renderer('local_mpa');
 
 $final_students = get_active_students();
 
+$date = date('Y-m-d H:i:s');
+$log = fopen("../log/Log_Summary.txt","a");
+fwrite($log,"INIZIO DEL LOG PER L'ANALISI DELL'ATTIVITA DEGLI STUDENTI IN DATA: ".$date."\n");
+fwrite($log,"INIZIO DELLA FASE DI ANALISI DELL'ATTIVITA DEGLI STUDENTI\n");
+fwrite($log,"CI SONO ".count($final_students)." STUDENTI DA PROCESSARE\n");
+
+$student_counter=1;
+
 foreach ($final_students as $student) {
+
+    fwrite($log,"ANALISI DELLLO STUDENTE NUMERO ".$student_counter." IN CORSO\n");
 
     $temp = $DB->get_records_sql('SELECT * FROM {mpa_student_summary} WHERE id=?', array($student->id));
 
@@ -41,6 +51,12 @@ foreach ($final_students as $student) {
         $DB->execute('UPDATE {mpa_student_summary} SET id=?, ex_to_evaluate_solved=?, ex_assessed=?, assigned_grades=?,received_grades=?, assignments_solved=? WHERE id=?', $parms = array($student->id, $student->getExToEvaluateSolved(), $student->getExAssessed(), $student->getAssignedGrades(), $student->getReceivedGrades(), $student->getAssignmentsSolved(), $student->id));
     }
 
+    $student_counter++;
+
 }
+
+fwrite($log,"INIZIO DELLA FASE DI ANALISI DELL'ATTIVITA DEGLI STUDENTI\n");
+
+fclose($log);
 
 echo $renderer->render_student_summary($final_students);

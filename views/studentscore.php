@@ -38,16 +38,16 @@ if (isloggedin()) {
             define('TEACHER_WEIGHT', $configuration->teacher_weight);
 
             $date = date('Y-m-d H:i:s');
-            $log = fopen("../log/Log.txt","w");
+            $log = fopen("../log/Log_Score.txt","w");
             fwrite($log,"INIZIO DEL LOG PER IL CALCOLO DEI PUNTEGGI IN DATA: ".$date."\n");
             fclose($log);
 
             $submissions_data = $DB->get_records_sql('SELECT *
-                FROM {workshop_submissions} AS mws INNER JOIN {workshop_assessments} AS mwa ON mws.id=mwa.submissionid WHERE mwa.reviewerid!=mws.authorid',
+                FROM {workshop_submissions} AS mws INNER JOIN {workshop_assessments} AS mwa ON mws.id=mwa.submissionid WHERE mwa.reviewerid!=mws.authorid AND mwa.grade IS NOT NULL',
                 array());
 
             $submission_counter = 1;
-            $log = fopen("../log/Log.txt","a");
+            $log = fopen("../log/Log_Score.txt","a");
             fwrite($log,"INIZIO DELLA FASE DI ANALISI DEGLI ASSESSMENT\n");
             fwrite($log,"CI SONO ".count($submissions_data)." ASSESSMENT DA PROCESSARE\n");
 
@@ -92,7 +92,8 @@ if (isloggedin()) {
 
                 // Recupero dei punteggi valutatore e risolutore (più relative stabilità) al nuovo istante ti, se non sono presenti perchè quella in oggetto è la prima valutazione, il primo viene inizializzato con una quantità epsilon arbitrariamente piccola, mentre il secondo è posto a zero.
 
-                $mpa_data = $DB->get_records_sql('SELECT * FROM {mpa_submission_data} WHERE evaluatorid=? OR solverid=?', array($evaluatorid, $solverid));
+
+                $mpa_data = $DB->get_records_sql('SELECT * FROM {mpa_student_scores} WHERE id=? OR id=?', array($evaluatorid, $solverid));
 
                 if (empty($mpda_data)) {
                     $old_evaluator_score = EPSILON;
@@ -221,7 +222,7 @@ if (isloggedin()) {
                               (?,?,?)', array($evaluatorid, $evaluator_score, $evaluator_steadiness));
                 } else {
                     $DB->execute('UPDATE {mpa_student_scores} SET evaluator_steadiness=?, evaluator_score=? WHERE id=?',
-                        array($evaluator_steadiness, $evaluator_steadiness, $evaluatorid));
+                        array($evaluator_steadiness, $evaluator_score, $evaluatorid));
                 }
 
                 $mpa_data = $DB->get_records_sql('SELECT * FROM {mpa_student_scores} WHERE id=?', array($solverid));
@@ -231,11 +232,17 @@ if (isloggedin()) {
                               (?,?,?)', array($solverid, $solver_score, $solver_steadiness));
                 } else {
                     $DB->execute('UPDATE {mpa_student_scores} SET solver_steadiness=?, solver_score=? WHERE id=?',
-                        array($solver_steadiness, $solver_steadiness, $solverid));
+                        array($solver_steadiness, $solver_score, $solverid));
                 }
 
                 $submission_counter++;
 
+            }
+
+            $mpa_data = $DB->get_records_sql('SELECT * FROM {mpa_student_scores} WHERE evaluator_score IS NULL');
+            foreach($mpa_data as $lazy_evaluator) {
+                $DB->execute('UPDATE {mpa_student_scores} SET evaluator_steadiness=?, evaluator_score=? WHERE id=?',
+                    array(0, 0, $lazy_evaluator->id));
             }
 
             fwrite($log,"FINE DELLA FASE DI ANALISI DEGLI ASSESSMENT\n");
@@ -247,6 +254,8 @@ if (isloggedin()) {
             fwrite($log,"FINE DELLA FASE DI RECUPERO\n");
 
             fwrite($log,"FINE DEL LOG\n");
+
+            fclose($log);
 
             echo $renderer->render_student_scores($students_data);
 
