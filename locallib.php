@@ -72,11 +72,13 @@ function download_send_headers($filename)
     header("Cache-Control: max-age=0, no-cache, must-revalidate, proxy-revalidate");
     header("Last-Modified: {$now} GMT");
 
+
+    header('Content-Type: application/zip');
     header("Content-Type: application/force-download");
     header("Content-Type: application/octet-stream");
     header("Content-Type: application/download");
 
     header("Content-Disposition: attachment;filename={$filename}");
-    header("Content-Transfer-Encoding: binary");
+    readfile($filename);
 
 }

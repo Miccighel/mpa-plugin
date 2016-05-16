@@ -23,7 +23,7 @@ if (isloggedin()) {
     if (has_capability('local/mpa:exportdata', $usercontext, $userid)) {
 
 
-        $data = $DB->get_records_sql('SELECT mu.id AS student_id,mu.firstname,mu.lastname,mu.username,mss.solver_score,
+        $data_evaluators = $DB->get_records_sql('SELECT mu.id AS student_id,mu.firstname,mu.lastname,mu.username,mss.solver_score,
                                              mss.solver_steadiness,mss.evaluator_score,mss.evaluator_steadiness,
                                              msum.ex_to_evaluate_solved,msum.ex_assessed,msum.assigned_grades,
                                              msum.received_grades,msum.assignments_solved,msd.id AS submission_id,msd.evaluatorid AS evaluator_id,
@@ -34,34 +34,67 @@ if (isloggedin()) {
                                       INNER JOIN {mpa_submission_data} AS msd ON msum.id=msd.evaluatorid)
                                       INNER JOIN {mpa_confidence_levels} AS mcl ON msd.evaluatorid = mcl.evaluatorid AND msd.id = mcl.id)');
 
-        $matrix = array();
-        foreach ($data as $temp) {
-            $row = array();
-            $row['student_id'] = $temp->student_id;
-            $row['firstname'] = $temp->firstname;
-            $row['lastname'] = $temp->lastname;
-            $row['username'] = $temp->username;
-            $row['solver_score'] = $temp->solver_score;
-            $row['solver_steadiness'] = $temp->solver_steadiness;
-            $row['evaluator_score'] = $temp->evaluator_score;
-            $row['evaluator_steadiness'] = $temp->evaluator_steadiness;
-            $row['ex_to_evaluate_solved'] = $temp->ex_to_evaluate_solved;
-            $row['ex_assessed'] = $temp->ex_assessed;
-            $row['assigned_grades'] = $temp->assigned_grades;
-            $row['received_grades'] = $temp->received_grades;
-            $row['assignments_solved'] = $temp->assignments_solved;
-            $row['submission_id'] = $temp->submission_id;
-            $row['evaluator_id'] = $temp->evaluator_id;
-            $row['solver_id'] = $temp->solver_id;
-            $row['submission_steadiness'] = $temp->submission_steadiness;
-            $row['submission_score'] = $temp->submission_score;
-            $row['assessment_goodness'] = $temp->assessment_goodness;
-            array_push($matrix, $row);
+
+        $matrix_evaluators = array();
+        foreach ($data_evaluators as $temp) {
+            $row = array($temp->student_id,$temp->firstname,$temp->lastname,$temp->username,$temp->solver_score,$temp->solver_steadiness,
+                $temp->evaluator_score,$temp->evaluator_steadiness,$temp->ex_to_evaluate_solved,$temp->ex_assessed,$temp->assigned_grades,
+                $temp->received_grades,$temp->assignments_solved,$temp->submission_id,$temp->evaluator_id,$temp->solver_id,
+                $temp->submission_steadiness,$temp->submission_score,$temp->assessment_goodness);
+            array_push($matrix_evaluators, $row);
         }
 
-        download_send_headers("data_export_" . date("Y-m-d") . ".csv");
-        echo array2csv($matrix);
-        die();
+        $file_evaluators_name = "../data/evaluators_data.csv";
+
+        $file_evaluators_data = fopen($file_evaluators_name,"w");
+        $header = array("student_id","firstname","lastname","username","solver_score","solver_steadiness",
+            "evaluator_score","evaluator_steadiness","ex_to_evaluate_solved","ex_assessed","assigned_grades",
+            "received_grades","assignments_solved","submission_id","evaluator_id","solver_id",
+            "submission_steadiness","submission_score","assessment_goodness");
+        fputcsv($file_evaluators_data, $header);
+        foreach ($matrix_evaluators as $evaluator) {
+            fputcsv($file_evaluators_data, $evaluator);
+        }
+        fclose($file_evaluators_data_data);
+
+        $data_solvers = $DB->get_records_sql('SELECT mu.id AS student_id,mu.firstname,mu.lastname,mu.username,
+                                             msum.ex_to_evaluate_solved,msum.ex_assessed,msum.assigned_grades,
+                                             msum.received_grades,msum.assignments_solved
+                                      FROM ({user} AS mu INNER JOIN {mpa_student_summary} AS msum ON mu.id=msum.id)
+                                      WHERE msum.ex_to_evaluate_solved=0');
+
+        $matrix_solvers = array();
+        foreach ($data_solvers as $temp) {
+            $row = array($temp->student_id,$temp->firstname,$temp->lastname,$temp->username,0,0,
+                0,0,$temp->ex_to_evaluate_solved,$temp->ex_assessed,$temp->assigned_grades,
+                $temp->received_grades,$temp->assignments_solved,0,0,0,0,0,0);
+            array_push($matrix_solvers, $row);
+        }
+
+        $file_solvers_name = "../data/solvers_data.csv";
+
+        $file_solvers_data = fopen($file_solvers_name,"w");
+        $header = array("student_id","firstname","lastname","username","solver_score","solver_steadiness",
+            "evaluator_score","evaluator_steadiness","ex_to_evaluate_solved","ex_assessed","assigned_grades",
+            "received_grades","assignments_solved","submission_id","evaluator_id","solver_id",
+            "submission_steadiness","submission_score","assessment_goodness");
+        fputcsv($file_solvers_data, $header);
+        foreach ($matrix_solvers as $solver) {
+            fputcsv($file_solvers_data, $solver);
+        }
+        fclose($file_solvers_data);
+
+        $files = array($file_evaluators_name,$file_solvers_name);
+
+        $zip_name= 'data_export.zip';
+        $zip = new ZipArchive;
+        $zip->open($zip_name, ZipArchive::CREATE);
+        foreach ($files as $file) {
+            $zip->addFile($file);
+        }
+        $zip->close();
+
+        download_send_headers($zip_name);
 
     } else {
         echo $renderer->render_capability_error();
