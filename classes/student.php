@@ -155,7 +155,7 @@ class Student
 
         foreach ($submissions as $object) {
             $submission = new Submission($object);
-            $assessments = $DB->get_records_sql('SELECT id,submissionid,feedbackauthor,grade FROM {workshop_assessments} WHERE submissionid=?', array($object->id));
+            $assessments = $DB->get_records_sql('SELECT id,submissionid,feedbackauthor,grade FROM {workshop_assessments} WHERE submissionid=? AND grade IS NOT NULL', array($object->id));
             foreach ($assessments as $object) {
                 $assessment = new Assessment($object);
                 $grades = $DB->get_records_sql('SELECT wa.description,wg.id, wg.peercomment, wg.grade FROM {workshop_grades} AS wg INNER JOIN {workshopform_accumulative} AS wa ON wg.dimensionid=wa.id WHERE assessmentid=?', array($object->id));
