@@ -24,7 +24,7 @@ if (isloggedin()) {
 
     $logged_student = new Student($userid);
 
-    $submissions_data = $DB->get_records_sql('SELECT * FROM {workshop_submissions} AS mws INNER JOIN {workshop_assessments} AS mwa ON mwa.submissionid=mws.id WHERE mwa.reviewerid!=mws.authorid', array());
+    $submissions_data = $DB->get_records_sql('SELECT * FROM {workshop_submissions} AS mws INNER JOIN {workshop_assessments} AS mwa ON mwa.submissionid=mws.id WHERE mwa.reviewerid!=mws.authorid AND mwa.grade IS NOT NULL', array());
 
     foreach ($submissions_data as $submission_data) {
 
@@ -38,6 +38,19 @@ if (isloggedin()) {
         if (empty($temp)) {
             $DB->execute('INSERT INTO {mpa_confidence_levels} (id,evaluatorid,confidence_level) VALUES (?,?,?)', $parms = array($submissionid, $evaluatorid, 0));
         }
+
+    }
+
+    $submissions_data = $DB->get_records_sql('SELECT * FROM {workshop_submissions} AS mws INNER JOIN {workshop_assessments} AS mwa ON mwa.submissionid=mws.id WHERE mwa.reviewerid!=mws.authorid AND mwa.grade IS NULL', array());
+
+    foreach ($submissions_data as $submission_data) {
+
+        // ID della risoluzione
+        $submissionid = $submission_data->submissionid;
+        // Autore dell'assessment per la risoluzione
+        $evaluatorid = $submission_data->reviewerid;
+
+        $temp = $DB->execute('DELETE FROM {mpa_confidence_levels} WHERE id=? AND evaluatorid=?', array($submissionid, $evaluatorid));
 
     }
 

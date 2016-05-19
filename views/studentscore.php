@@ -33,17 +33,20 @@ if (isloggedin()) {
             $configuration = array_pop($configuration);
 
             define('EPSILON', $configuration->epsilon);
-            define('GRADING_FACTOR', $configuration->grading_factor);
             define('INFINITY', $configuration->infinity);
             define('TEACHER_WEIGHT', $configuration->teacher_weight);
+            $grading_factor = $configuration->grading_factor;
+
 
             $date = date('Y-m-d H:i:s');
             $log = fopen("../log/Log_Score.txt","w");
             fwrite($log,"INIZIO DEL LOG PER IL CALCOLO DEI PUNTEGGI IN DATA: ".$date."\n");
             fclose($log);
 
-            $submissions_data = $DB->get_records_sql('SELECT *
-                FROM {workshop_submissions} AS mws INNER JOIN {workshop_assessments} AS mwa ON mws.id=mwa.submissionid WHERE mwa.reviewerid!=mws.authorid AND mwa.grade IS NOT NULL',
+            $submissions_data = $DB->get_records_sql('SELECT * FROM (({workshop_submissions} AS mws 
+                INNER JOIN {workshop_assessments} AS mwa ON mws.id=mwa.submissionid)
+                INNER JOIN {workshop_grades} AS mwg ON mwa.id=mwg.assessmentid)
+                WHERE mwa.reviewerid!=mws.authorid AND mwa.grade IS NOT NULL',
                 array());
 
             $submission_counter = 1;
@@ -59,8 +62,10 @@ if (isloggedin()) {
                 $submissionid = $submission_data->submissionid;
                 // Autore dell'assessment per la risoluzione
                 $evaluatorid = $submission_data->reviewerid;
-                // Autore della risoluzioned
+                // Autore della risoluzione
                 $solverid = $submission_data->authorid;
+                // ID dell'assessment
+                $assessmentid = $submission_data->assessmentid;
 
                 // Verifica dello status di docente del valutatore per il corso corrente
 
@@ -110,7 +115,15 @@ if (isloggedin()) {
 
                 // Recupero del giudizio espresso dal valutatore
 
-                $assessment_value = $submission_data->grade / GRADING_FACTOR;
+                $grade = floatval(array_pop($DB->get_records_sql('SELECT grade FROM {workshop_grades} WHERE assessmentid=?', array($assessmentid)))->grade);
+
+                if($grade<10){
+                    $grading_factor=10;
+                } else {
+                    $grading_factor=100;
+                }
+
+                $assessment_value = $grade / $grading_factor;
 
                 // Recupero del livello di confidenza per l'assessment in oggetto. Se il valutatore non ha espresso tale valore, viene usato un valore molto piccolo epsilon.
 
@@ -190,15 +203,19 @@ if (isloggedin()) {
                     $previous_evaluator_steadiness = $previous_evaluator->evaluator_steadiness;
                     $previous_evaluator_score = $previous_evaluator->evaluator_score;
                     $previous_assessment_goodness = $previous_evaluator->assessment_goodness;
-                    $previous_assessment_value = array_pop($DB->get_records_sql('SELECT grade FROM {workshop_assessments} WHERE submissionid=? AND reviewerid=?', array($submissionid, $previous_evaluator->evaluatorid)))->grade / GRADING_FACTOR;
+                    $previous_assessment_grade = array_pop($DB->get_records_sql('SELECT mwg.grade AS grade FROM {workshop_assessments} AS mwa INNER JOIN {workshop_grades} AS mwg ON mwa.id=mwg.assessmentid WHERE mwa.submissionid=? AND mwa.reviewerid=?', array($submissionid, $previous_evaluator->evaluatorid)))->grade;
+                    if($previous_assessment_grade<10){
+                        $grading_factor=10;
+                    } else {
+                        $grading_factor=100;
+                    }
+                    $previous_assessment_value = $previous_assessment_grade / $grading_factor;
                     $previous_confidence_level = array_pop($DB->get_records_sql('SELECT confidence_level FROM {mpa_confidence_levels} WHERE id=? AND evaluatorid=?', array($submissionid, $previous_evaluator->evaluatorid)))->confidence_level;
                     $new_evaluator_steadiness = $previous_evaluator_steadiness + ($old_evaluator_score * $confidence_level * $previous_confidence_level);
                     $new_assessment_goodness = 1 - sqrt(abs($previous_assessment_value - $submission_score));
                     $new_evaluator_score = (($previous_evaluator_steadiness * $previous_evaluator_score) - ($old_submission_steadiness * $previous_assessment_goodness * $previous_confidence_level) + ($submission_steadiness * $new_assessment_goodness * $previous_confidence_level)) / $new_evaluator_steadiness;
-
                     $mpa_data = $DB->execute('UPDATE {mpa_student_scores} SET evaluator_score=?, evaluator_steadiness=? WHERE id=?', array($new_evaluator_score, $new_evaluator_steadiness, $previous_evaluator->evaluatorid));
                     $mpa_data = $DB->execute('UPDATE {mpa_submission_data} SET assessment_goodness=? WHERE id=? AND evaluatorid=?', array($new_assessment_goodness, $submissionid, $previous_evaluator->evaluatorid));
-
                     $evaluators_counter++;
 
                 }
