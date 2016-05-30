@@ -1,0 +1,70 @@
+<!--
+
+    Schema delle tabelle create nel database dal plugin.
+
+-->
+
+<XMLDB PATH="local/mpa/db" VERSION="2015070600" COMMENT="XMLDB file for Moodle report/mpa">
+    <TABLES>
+        <TABLE NAME="mpa_student_summary" COMMENT="Data to create the summary of the students of the courses">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true"/>
+                <FIELD NAME="ex_to_evaluate_solved" TYPE="int" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="ex_assessed" TYPE="int" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="assigned_grades" TYPE="int" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="received_grades" TYPE="int" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="assignments_solved" TYPE="int" LENGTH="10" NOTNULL="false"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+            </KEYS>
+        </TABLE>
+        <TABLE NAME="mpa_student_scores" COMMENT="Evaluator and solver score of the students of the courses">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true"/>
+                <FIELD NAME="solver_score" TYPE="float"/>
+                <FIELD NAME="solver_steadiness" TYPE="float"/>
+                <FIELD NAME="evaluator_score" TYPE="float"/>
+                <FIELD NAME="evaluator_steadiness" TYPE="float"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+            </KEYS>
+        </TABLE>
+        <TABLE NAME="mpa_submission_data"
+               COMMENT="Intermediate data to compute solver and evaluator scores of the students of the courses">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true"/>
+                <FIELD NAME="evaluatorid" TYPE="int" LENGTH="10" NOTNULL="true"/>
+                <FIELD NAME="solverid" TYPE="int" LENGTH="10" NOTNULL="true"/>
+                <FIELD NAME="submission_steadiness" TYPE="float"/>
+                <FIELD NAME="submission_score" TYPE="float"/>
+                <FIELD NAME="assessment_goodness" TYPE="float"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id, evaluatorid, solverid"/>
+            </KEYS>
+        </TABLE>
+        <TABLE NAME="mpa_confidence_levels" COMMENT="Confidence levels for the assessments expressed by the students">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true"/>
+                <FIELD NAME="evaluatorid" TYPE="int" LENGTH="10"/>
+                <FIELD NAME="confidence_level" TYPE="float"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id, evaluatorid"/>
+            </KEYS>
+        </TABLE>
+        <TABLE NAME="mpa_configuration_info" COMMENT="Configuration of the plugin">
+            <FIELDS>
+                <FIELD NAME="epsilon" TYPE="float" NOTNULL="true"/>
+                <FIELD NAME="infinity" TYPE="float" NOTNULL="true"/>
+                <FIELD NAME="grading_factor" TYPE="float" NOTNULL="true"/>
+                <FIELD NAME="teacher_weight" TYPE="float" NOTNULL="true"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="epsilon,infinity,grading_factor,teacher_weight"/>
+            </KEYS>
+        </TABLE>
+    </TABLES>
+</XMLDB>
