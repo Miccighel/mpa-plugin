@@ -40,7 +40,7 @@ if (isloggedin()) {
         }
 
     }
-
+    
     $submissions_data = $DB->get_records_sql('SELECT * FROM {workshop_submissions} AS mws INNER JOIN {workshop_assessments} AS mwa ON mwa.submissionid=mws.id WHERE mwa.reviewerid!=mws.authorid AND mwa.grade IS NULL', array());
 
     foreach ($submissions_data as $submission_data) {
