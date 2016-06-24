@@ -96,7 +96,7 @@ if (isloggedin()) {
                                              msum.ex_to_evaluate_solved,msum.ex_assessed,msum.assigned_grades,
                                              msum.received_grades,msum.assignments_solved
                                       FROM ({user} AS mu INNER JOIN {mpa_student_summary} AS msum ON mu.id=msum.id)
-                                      WHERE msum.ex_to_evaluate_solved=0');
+                                      WHERE msum.ex_to_evaluate_solved=0 OR msum.ex_assessed=0 OR msum.assigned_grades=0');
 
         $matrix_solvers = array();
         foreach ($data_solvers as $temp) {
