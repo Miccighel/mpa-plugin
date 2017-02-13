@@ -7,10 +7,10 @@
  * @copyright  2015, Michael Soprano, miccighel@gmail.com
  */
 
-function local_mpa_extends_navigation(global_navigation $navigation)
+function local_mpa_extend_navigation(global_navigation $navigation)
 {
 
-    global $CFG;
+    global $CFG, $PAGE;
 
     $baseMenu = $navigation->add(get_string('pluginname', 'local_mpa'), new moodle_url($CFG->wwwroot . '/local/mpa/index.php'), null, null, null);
 
@@ -21,6 +21,5 @@ function local_mpa_extends_navigation(global_navigation $navigation)
     $baseMenu->add(get_string('mpa:exportdata', 'local_mpa'), new moodle_url($CFG->wwwroot . '/local/mpa/views/exportdata.php'), null, null, null);
 
     $baseMenu->forceopen = true;
-
 }
 
